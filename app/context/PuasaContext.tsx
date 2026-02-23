@@ -9,6 +9,7 @@ interface RamadanInfo {
   hijriYear: string;
   ramadanStartDayOfWeek: number; // 0=Sun ... 6=Sat
   ramadanDays: number;
+  ramadanStartGregorian: string; // e.g. "01-March-2026"
 }
 
 interface PuasaContextType {
@@ -26,6 +27,7 @@ const DEFAULT_RAMADAN_INFO: RamadanInfo = {
   hijriYear: '1447',
   ramadanStartDayOfWeek: 3,
   ramadanDays: 30,
+  ramadanStartGregorian: '18-February-2026',
 };
 
 const PuasaContext = createContext<PuasaContextType | null>(null);
@@ -53,6 +55,7 @@ export function PuasaProvider({ children }: { children: React.ReactNode }) {
             hijriYear: data.hijriYear || '1447',
             ramadanStartDayOfWeek: data.ramadanStartDayOfWeek ?? 3,
             ramadanDays: data.ramadanDays || 30,
+            ramadanStartGregorian: data.ramadanStartGregorian || '18-February-2026',
           });
         }
       } catch (error) {

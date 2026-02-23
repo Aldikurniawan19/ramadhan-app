@@ -54,15 +54,12 @@ export default function HomePage() {
             <span className="text-[11px] md:text-sm font-medium text-r-light/80">Tasbih</span>
           </button>
 
-          <button
-            className="flex flex-col items-center gap-2 group"
-            onClick={() => alert('Fitur Kompas Kiblat sedang dalam pengembangan!')}
-          >
+          <Link href="/kiblat" className="flex flex-col items-center gap-2 group">
             <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-r-light/5 flex items-center justify-center text-r-cyan group-hover:bg-r-blue group-hover:text-white transition-all duration-300 shadow-sm border border-r-light/5">
               <i className="fa-solid fa-compass text-xl md:text-2xl"></i>
             </div>
             <span className="text-[11px] md:text-sm font-medium text-r-light/80">Kiblat</span>
-          </button>
+          </Link>
         </div>
 
         {/* Ibadah Summary */}
