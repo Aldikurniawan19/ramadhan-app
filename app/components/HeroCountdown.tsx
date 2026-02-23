@@ -46,9 +46,17 @@ function getNextPrayer(prayerData: PrayerTime[]) {
 
 export default function HeroCountdown() {
   const { prayerData, city, isLoading } = usePrayerTimes();
-  const [state, setState] = useState(() => getNextPrayer(prayerData));
+  const [mounted, setMounted] = useState(false);
+  const [state, setState] = useState({
+    nextIndex: 0,
+    countdown: '--:--:--',
+    prayerName: prayerData[0]?.name || 'Imsak',
+    prayerTime: prayerData[0]?.time || '04:28',
+    progress: 0,
+  });
 
   useEffect(() => {
+    setMounted(true);
     setState(getNextPrayer(prayerData));
     const interval = setInterval(() => setState(getNextPrayer(prayerData)), 1000);
     return () => clearInterval(interval);
