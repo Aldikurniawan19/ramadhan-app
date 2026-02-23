@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Ramadhan</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config for Custom Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'r-cyan': '#00FFD4',
+                        'r-blue': '#5465FF',
+                        'r-light': '#D2DDFF',
+                        'r-dark': '#050208',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Hide scrollbar for horizontal scrolling */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        body {
+            background-color: #050208;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body class="text-r-light antialiased bg-[#050208]">
+
+    <!-- Main Web Container -->
+    <div class="w-full min-h-screen flex flex-col relative bg-[#050208]">
+        
+        <!-- Header -->
+        <header class="w-full pt-12 md:pt-8 pb-4 z-10 px-6">
+            <div class="max-w-5xl mx-auto w-full flex justify-between items-center">
+                <div class="flex items-center gap-2 text-r-light/80 hover:text-r-cyan transition-colors cursor-pointer">
+                    <i class="fa-solid fa-location-dot text-r-cyan"></i>
+                    <span class="text-sm font-medium">Jakarta, Indonesia</span>
+                    <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+                </div>
+                <button class="relative w-10 h-10 rounded-full bg-r-light/5 flex items-center justify-center hover:bg-r-light/10 transition">
+                    <i class="fa-regular fa-bell text-r-light"></i>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-r-cyan rounded-full"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Scrollable -->
+        <main class="flex-1 w-full pb-28 relative overflow-x-hidden">
+            
+            <!-- VIEW: BERANDA -->
+            <div id="view-home" class="view-section transition-opacity duration-300 opacity-100 px-6">
+                <div class="max-w-5xl mx-auto w-full">
+                    <!-- Greeting -->
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-semibold text-white">Assalamu'alaikum,</h1>
+                        <p class="text-r-light/70 text-sm mt-1">Ramadhan Hari Ke-14</p>
+                    </div>
+
+                    <!-- Hero / Countdown Card -->
+                    <div class="relative bg-gradient-to-br from-r-blue to-[#2b358a] rounded-3xl p-6 md:p-10 shadow-[0_10px_30px_rgba(84,101,255,0.3)] overflow-hidden mb-8">
+                        <!-- Decorative Circle -->
+                        <div class="absolute -top-16 -right-16 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-r-cyan/20 rounded-full blur-xl"></div>
+                        
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <p id="hero-prayer-name" class="text-white/80 text-sm md:text-base font-medium mb-1">Menuju Berbuka (Maghrib)</p>
+                            <h2 id="countdown" class="text-4xl md:text-6xl font-bold text-white tracking-wider my-3 drop-shadow-md">00:00:00</h2>
+                            <div class="w-full max-w-lg bg-black/20 rounded-full h-1.5 md:h-2 mt-2 mb-4">
+                                <div id="hero-progress" class="bg-r-cyan h-1.5 md:h-2 rounded-full" style="width: 0%; transition: width 1s linear;"></div>
+                            </div>
+                            <div class="flex justify-between w-full max-w-lg text-xs md:text-sm text-white/90 font-medium">
+                                <span id="hero-prayer-time">18:02 WIB</span>
+                                <span>Sisa Waktu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Grid -->
+                    <div class="grid grid-cols-4 md:flex md:justify-center md:gap-16 gap-4 mb-8">
+                        <!-- Action 1 -->
+                        <button class="flex flex-col items-center gap-2 group" onclick="switchView('quran')">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-r-light/5 flex items-center justify-center text-r-cyan group-hover:bg-r-blue group-hover:text-white transition-all duration-300 shadow-sm border border-r-light/5">
+                                <i class="fa-solid fa-book-quran text-xl md:text-2xl"></i>
+                            </div>
+                            <span class="text-[11px] md:text-sm font-medium text-r-light/80">Al-Quran</span>
+                        </button>
+                        <!-- Action 2 -->
+                        <button class="flex flex-col items-center gap-2 group" onclick="alert('Fitur Doa Harian sedang dalam pengembangan!')">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-r-light/5 flex items-center justify-center text-r-cyan group-hover:bg-r-blue group-hover:text-white transition-all duration-300 shadow-sm border border-r-light/5">
+                                <i class="fa-solid fa-hands-praying text-xl md:text-2xl"></i>
+                            </div>
+                            <span class="text-[11px] md:text-sm font-medium text-r-light/80">Doa Harian</span>
+                        </button>
+                        <!-- Action 3 (Tasbih Trigger) -->
+                        <button id="btn-tasbih-quick" class="flex flex-col items-center gap-2 group">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-r-light/5 flex items-center justify-center text-r-cyan group-hover:bg-r-blue group-hover:text-white transition-all duration-300 shadow-sm border border-r-light/5">
+                                <i class="fa-solid fa-fingerprint text-xl md:text-2xl"></i>
+                            </div>
+                            <span class="text-[11px] md:text-sm font-medium text-r-light/80">Tasbih</span>
+                        </button>
+                        <!-- Action 4 -->
+                        <button class="flex flex-col items-center gap-2 group" onclick="alert('Fitur Kompas Kiblat sedang dalam pengembangan!')">
+                            <div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-r-light/5 flex items-center justify-center text-r-cyan group-hover:bg-r-blue group-hover:text-white transition-all duration-300 shadow-sm border border-r-light/5">
+                                <i class="fa-solid fa-compass text-xl md:text-2xl"></i>
+                            </div>
+                            <span class="text-[11px] md:text-sm font-medium text-r-light/80">Kiblat</span>
+                        </button>
+                    </div>
+
+                    <!-- Ringkasan Statistik -->
+                    <div class="mb-4 flex justify-between items-end">
+                        <h3 class="text-lg md:text-xl font-semibold text-white">Ringkasan Ibadah</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 md:gap-8 mb-8">
+                        <!-- Puasa -->
+                        <div class="bg-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6">
+                            <div class="flex items-center gap-2 mb-2 md:mb-4">
+                                <i class="fa-solid fa-moon text-r-cyan md:text-lg"></i>
+                                <span class="text-xs md:text-sm font-medium text-white">Puasa</span>
+                            </div>
+                            <div class="flex items-end gap-1 md:gap-2 mb-2 md:mb-4">
+                                <span id="home-puasa-count" class="text-2xl md:text-4xl font-bold text-white">14</span>
+                                <span class="text-r-light/60 text-[10px] md:text-xs mb-1 md:mb-2">/ 30 Hari</span>
+                            </div>
+                            <div class="w-full bg-black/40 rounded-full h-1.5 md:h-2">
+                                <div id="home-puasa-bar" class="bg-r-cyan h-1.5 md:h-2 rounded-full" style="width: 46%;"></div>
+                            </div>
+                        </div>
+                        <!-- Khatam -->
+                        <div class="bg-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6">
+                            <div class="flex items-center gap-2 mb-2 md:mb-4">
+                                <i class="fa-solid fa-book-open text-r-blue md:text-lg"></i>
+                                <span class="text-xs md:text-sm font-medium text-white">Khatam</span>
+                            </div>
+                            <div class="flex items-end gap-1 md:gap-2 mb-2 md:mb-4">
+                                <span class="text-2xl md:text-4xl font-bold text-white">15</span>
+                                <span class="text-r-light/60 text-[10px] md:text-xs mb-1 md:mb-2">/ 30 Juz</span>
+                            </div>
+                            <div class="w-full bg-black/40 rounded-full h-1.5 md:h-2">
+                                <div class="bg-r-blue h-1.5 md:h-2 rounded-full" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jadwal Sholat Section -->
+                    <div class="mb-4 flex justify-between items-end">
+                        <h3 class="text-lg md:text-xl font-semibold text-white">Jadwal Sholat</h3>
+                        <span class="text-xs md:text-sm text-r-cyan cursor-pointer hover:underline">Lihat Semua</span>
+                    </div>
+                    
+                    <!-- Akan dirender via JS agar dinamis -->
+                    <div class="flex md:grid md:grid-cols-6 gap-3 overflow-x-auto md:overflow-visible hide-scrollbar pb-4 -mx-6 px-6 md:mx-0 md:px-0" id="prayer-times-container">
+                    </div>
+
+                    <!-- Daily Inspiration Card -->
+                    <div class="mt-4 md:mt-8 bg-r-light/5 border border-r-light/10 rounded-2xl p-5 md:p-8 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 md:w-48 md:h-48 bg-r-blue/10 rounded-full blur-2xl"></div>
+                        <div class="flex items-center gap-3 mb-3 md:mb-4">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-r-blue/20 flex items-center justify-center text-r-blue">
+                                <i class="fa-solid fa-quote-right text-xs md:text-sm"></i>
+                            </div>
+                            <h3 class="text-sm md:text-base font-semibold text-white">Ayat Hari Ini</h3>
+                        </div>
+                        <p class="text-sm md:text-lg text-r-light/80 leading-relaxed italic relative z-10">
+                            "Hai orang-orang yang beriman, diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang-orang sebelum kamu agar kamu bertakwa."
+                        </p>
+                        <p class="text-xs md:text-sm text-r-cyan mt-3 font-medium">(QS. Al-Baqarah: 183)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: QURAN -->
+            <div id="view-quran" class="view-section hidden opacity-0 transition-opacity duration-300 pb-6 px-6">
+                <div class="max-w-5xl mx-auto w-full">
+                    <div class="mb-6 mt-2">
+                        <h1 class="text-2xl font-semibold text-white">Al-Qur'an</h1>
+                        <p class="text-r-light/70 text-sm mt-1">Lanjutkan bacaan terakhirmu</p>
+                    </div>
+                    
+                    <!-- Last Read -->
+                    <div class="bg-gradient-to-r from-[#2a2b3d] to-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6 mb-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs md:text-sm text-r-cyan mb-1 flex items-center gap-1"><i class="fa-solid fa-book-open-reader"></i> Terakhir Dibaca</p>
+                            <h3 class="text-white font-medium text-lg md:text-2xl">Al-Mulk</h3>
+                            <p class="text-xs md:text-sm text-r-light/60">Ayat 12</p>
+                        </div>
+                        <button class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-r-blue flex items-center justify-center text-white shadow-lg hover:scale-105 transition">
+                            <i class="fa-solid fa-play text-xs md:text-base ml-0.5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="bg-r-light/5 border border-r-light/10 rounded-2xl p-3 md:p-4 flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-magnifying-glass text-r-light/40 ml-2"></i>
+                        <input type="text" placeholder="Cari Surah..." class="bg-transparent border-none outline-none text-white w-full text-sm md:text-base placeholder:text-r-light/40">
+                    </div>
+
+                    <!-- Surah List -->
+                    <h3 class="text-sm font-semibold text-white mb-3">Daftar Surah</h3>
+                    <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="bg-r-light/5 hover:bg-r-light/10 transition border border-r-light/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center gap-4">
+                                <div class="relative flex items-center justify-center w-10 h-10">
+                                    <i class="fa-regular fa-star text-r-cyan/30 text-3xl absolute"></i>
+                                    <span class="text-xs font-semibold text-white relative z-10">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium">Al-Fatihah</h3>
+                                    <p class="text-xs text-r-light/60">Makkah • 7 Ayat</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-r-cyan text-xl" style="font-family: 'Times New Roman', serif;">الفاتحة</div>
+                        </div>
+                        <div class="bg-r-light/5 hover:bg-r-light/10 transition border border-r-light/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center gap-4">
+                                <div class="relative flex items-center justify-center w-10 h-10">
+                                    <i class="fa-regular fa-star text-r-cyan/30 text-3xl absolute"></i>
+                                    <span class="text-xs font-semibold text-white relative z-10">2</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium">Al-Baqarah</h3>
+                                    <p class="text-xs text-r-light/60">Madinah • 286 Ayat</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-r-cyan text-xl" style="font-family: 'Times New Roman', serif;">البقرة</div>
+                        </div>
+                        <div class="bg-r-light/5 hover:bg-r-light/10 transition border border-r-light/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer">
+                            <div class="flex items-center gap-4">
+                                <div class="relative flex items-center justify-center w-10 h-10">
+                                    <i class="fa-regular fa-star text-r-cyan/30 text-3xl absolute"></i>
+                                    <span class="text-xs font-semibold text-white relative z-10">36</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium">Ya Sin</h3>
+                                    <p class="text-xs text-r-light/60">Makkah • 83 Ayat</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-r-cyan text-xl" style="font-family: 'Times New Roman', serif;">يس</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: KALENDER PUASA -->
+            <div id="view-kalender" class="view-section hidden opacity-0 transition-opacity duration-300 pb-6 px-6">
+                <div class="max-w-5xl mx-auto w-full">
+                    <div class="mb-6 mt-2">
+                        <h1 class="text-2xl font-semibold text-white">Kalender Puasa</h1>
+                        <p class="text-r-light/70 text-sm mt-1">Pantau dan tandai hari puasa Anda</p>
+                    </div>
+                    
+                    <div class="bg-r-light/5 border border-r-light/10 rounded-2xl p-5 md:p-8 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-sm md:text-lg font-semibold text-white">Ramadhan 1447 H</h3>
+                            <span class="text-xs md:text-sm text-r-cyan bg-r-cyan/10 px-3 py-1.5 rounded-md border border-r-cyan/20">Hari ke-14</span>
+                        </div>
+                        
+                        <!-- Hari Grid Header -->
+                        <div class="grid grid-cols-7 gap-1 md:gap-4 text-center mb-4">
+                            <div class="text-[10px] md:text-sm font-medium text-red-400">Min</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Sen</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Sel</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Rab</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Kam</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Jum</div>
+                            <div class="text-[10px] md:text-sm font-medium text-r-light/60">Sab</div>
+                        </div>
+                        
+                        <!-- Calendar Dates -->
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-2 md:gap-4 text-center">
+                            <!-- Akan dirender via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Status Puasa Hari Ini -->
+                    <div class="bg-gradient-to-r from-[#2a2b3d] to-r-light/5 border border-r-light/10 rounded-2xl p-5 md:p-6 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-white font-medium text-sm md:text-lg mb-1">Puasa Hari Ini?</h3>
+                            <p class="text-xs md:text-sm text-r-light/60">Ketuk untuk menandai puasa</p>
+                        </div>
+                        <!-- Custom Toggle -->
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-puasa-hari-ini" class="sr-only peer" onchange="togglePuasaToday()">
+                            <div class="w-11 h-6 md:w-14 md:h-7 bg-r-light/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] md:after:top-[2px] md:after:left-[4px] after:bg-r-light/50 peer-checked:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 md:after:h-6 md:after:w-6 after:transition-all peer-checked:bg-r-cyan"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: PROFIL -->
+            <div id="view-profil" class="view-section hidden opacity-0 transition-opacity duration-300 pb-6 px-6">
+                <div class="max-w-2xl mx-auto w-full">
+                    <div class="flex flex-col items-center mt-6 md:mt-10 mb-8 md:mb-12">
+                        <div class="w-24 h-24 md:w-32 md:h-32 bg-r-blue/20 rounded-full border-2 border-r-cyan flex items-center justify-center mb-4 relative shadow-[0_0_20px_rgba(0,255,212,0.2)]">
+                            <i class="fa-solid fa-user text-4xl md:text-6xl text-r-cyan"></i>
+                            <button class="absolute bottom-0 right-0 md:right-2 md:bottom-2 w-8 h-8 md:w-10 md:h-10 bg-r-blue rounded-full flex items-center justify-center text-white border-2 border-[#1a1b26] hover:scale-110 transition-transform cursor-pointer">
+                                <i class="fa-solid fa-pen text-xs md:text-sm"></i>
+                            </button>
+                        </div>
+                        <h2 class="text-xl md:text-3xl font-semibold text-white">Hamba Allah</h2>
+                        <p class="text-r-light/60 text-sm md:text-base mt-1">Jakarta, Indonesia</p>
+                    </div>
+                    
+                    <div class="bg-r-light/5 border border-r-light/10 rounded-2xl overflow-hidden flex flex-col">
+                        <button class="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5">
+                            <div class="flex items-center gap-3 md:gap-5">
+                                <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-r-light/10 flex items-center justify-center text-r-light/80">
+                                    <i class="fa-regular fa-bell md:text-lg"></i>
+                                </div>
+                                <span class="text-sm md:text-base text-white font-medium">Pengaturan Notifikasi</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs md:text-sm text-r-light/40"></i>
+                        </button>
+                        <button class="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5">
+                            <div class="flex items-center gap-3 md:gap-5">
+                                <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-r-light/10 flex items-center justify-center text-r-light/80">
+                                    <i class="fa-solid fa-sliders md:text-lg"></i>
+                                </div>
+                                <span class="text-sm md:text-base text-white font-medium">Preferensi Aplikasi</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs md:text-sm text-r-light/40"></i>
+                        </button>
+                        <button class="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5">
+                            <div class="flex items-center gap-3 md:gap-5">
+                                <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-r-light/10 flex items-center justify-center text-r-light/80">
+                                    <i class="fa-regular fa-circle-question md:text-lg"></i>
+                                </div>
+                                <span class="text-sm md:text-base text-white font-medium">Bantuan & FAQ</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs md:text-sm text-r-light/40"></i>
+                        </button>
+                        <button class="flex items-center justify-between p-4 md:p-6 hover:bg-red-500/10 transition">
+                            <div class="flex items-center gap-3 md:gap-5">
+                                <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
+                                    <i class="fa-solid fa-arrow-right-from-bracket md:text-lg"></i>
+                                </div>
+                                <span class="text-sm md:text-base text-red-400 font-medium">Keluar</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Tasbih Modal Popup -->
+        <div id="tasbih-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-r-dark/90 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 pointer-events-none">
+            <div class="bg-[#1a1b26] border border-r-light/10 rounded-3xl p-6 w-[85%] max-w-sm flex flex-col items-center relative shadow-2xl transform scale-95 transition-transform duration-300 pointer-events-auto">
+                <button id="close-tasbih" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-r-light/5 text-r-light/50 hover:text-white hover:bg-r-light/10 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3 class="text-xl font-semibold text-white mb-2">Tasbih Digital</h3>
+                <p id="tasbih-text" class="text-r-cyan text-sm font-medium mb-6 h-5">Subhanallah</p>
+                
+                <!-- Counter Display -->
+                <div class="w-36 h-36 rounded-full border-[6px] border-r-blue/30 bg-r-light/5 flex items-center justify-center mb-8 relative shadow-[0_0_40px_rgba(84,101,255,0.15)]">
+                    <span id="tasbih-count" class="text-6xl font-bold text-white transition-transform">0</span>
+                </div>
+                
+                <!-- Tap Button -->
+                <button id="tasbih-btn" class="w-full py-4 bg-gradient-to-r from-r-blue to-r-cyan rounded-2xl text-r-dark font-bold text-xl hover:opacity-90 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-hand-pointer text-lg"></i> TAP
+                </button>
+                <button id="tasbih-reset" class="mt-5 text-r-light/50 text-sm hover:text-white flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-rotate-right"></i> Reset Hitungan
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 w-full bg-r-dark/95 backdrop-blur-md border-t border-r-light/10 z-20">
+            <div class="max-w-5xl mx-auto px-6 py-4 pb-8 sm:pb-6">
+                <ul class="flex justify-between items-center relative">
+                    <li id="nav-home" class="nav-item flex flex-col items-center gap-1 cursor-pointer text-r-cyan transition-colors" onclick="switchView('home')">
+                        <i class="fa-solid fa-house text-xl mb-1"></i>
+                        <span class="text-[10px] md:text-xs font-medium">Beranda</span>
+                    </li>
+                    <li id="nav-quran" class="nav-item flex flex-col items-center gap-1 cursor-pointer text-r-light/40 hover:text-r-cyan transition-colors" onclick="switchView('quran')">
+                        <i class="fa-solid fa-book-open text-xl mb-1"></i>
+                        <span class="text-[10px] md:text-xs font-medium">Quran</span>
+                    </li>
+                    <!-- Floating Center Button (Mosque) -->
+                    <li class="relative -top-5 md:-top-7">
+                        <button class="w-14 h-14 md:w-16 md:h-16 bg-r-blue rounded-full flex items-center justify-center text-white shadow-[0_5px_20px_rgba(84,101,255,0.4)] hover:scale-105 transition-transform border-4 border-r-dark" onclick="switchView('home')">
+                            <i class="fa-solid fa-mosque text-xl md:text-2xl"></i>
+                        </button>
+                    </li>
+                    <li id="nav-kalender" class="nav-item flex flex-col items-center gap-1 cursor-pointer text-r-light/40 hover:text-r-cyan transition-colors" onclick="switchView('kalender')">
+                        <i class="fa-regular fa-calendar-days text-xl mb-1"></i>
+                        <span class="text-[10px] md:text-xs font-medium">Kalender</span>
+                    </li>
+                    <li id="nav-profil" class="nav-item flex flex-col items-center gap-1 cursor-pointer text-r-light/40 hover:text-r-cyan transition-colors" onclick="switchView('profil')">
+                        <i class="fa-regular fa-user text-xl mb-1"></i>
+                        <span class="text-[10px] md:text-xs font-medium">Profil</span>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Scripts for Interactivity -->
+    <script>
+        // --- 1. Logika Navigasi Tab ---
+        const views = ['home', 'quran', 'kalender', 'profil'];
+        
+        function switchView(targetView) {
+            views.forEach(view => {
+                const viewEl = document.getElementById(`view-${view}`);
+                const navEl = document.getElementById(`nav-${view}`);
+                
+                if (view === targetView) {
+                    // Tampilkan Halaman
+                    viewEl.classList.remove('hidden');
+                    setTimeout(() => viewEl.classList.add('opacity-100'), 10);
+                    // Aktifkan Menu Bawah
+                    if(navEl) {
+                        navEl.classList.remove('text-r-light/40');
+                        navEl.classList.add('text-r-cyan');
+                    }
+                } else {
+                    // Sembunyikan Halaman
+                    viewEl.classList.remove('opacity-100');
+                    viewEl.classList.add('hidden');
+                    // Nonaktifkan Menu Bawah
+                    if(navEl) {
+                        navEl.classList.remove('text-r-cyan');
+                        navEl.classList.add('text-r-light/40');
+                    }
+                }
+            });
+        }
+
+        // --- 2. Logika Modal Tasbih ---
+        let tasbihCountValue = 0;
+        const btnTasbihQuick = document.getElementById('btn-tasbih-quick');
+        const modalTasbih = document.getElementById('tasbih-modal');
+        const closeTasbih = document.getElementById('close-tasbih');
+        const btnTap = document.getElementById('tasbih-btn');
+        const btnReset = document.getElementById('tasbih-reset');
+        const displayCount = document.getElementById('tasbih-count');
+        const displayText = document.getElementById('tasbih-text');
+
+        function updateTasbihDisplay() {
+            displayCount.innerText = tasbihCountValue;
+            
+            // Perubahan Dzikir Otomatis tiap kelipatan 33
+            if (tasbihCountValue < 33) displayText.innerText = "Subhanallah";
+            else if (tasbihCountValue < 66) displayText.innerText = "Alhamdulillah";
+            else if (tasbihCountValue < 99) displayText.innerText = "Allahu Akbar";
+            else displayText.innerText = "Lailahaillallah";
+            
+            // Efek Animasi Membesar (Pop)
+            displayCount.style.transform = 'scale(1.2)';
+            setTimeout(() => displayCount.style.transform = 'scale(1)', 150);
+        }
+
+        btnTasbihQuick.addEventListener('click', () => {
+            modalTasbih.classList.remove('hidden');
+            setTimeout(() => {
+                modalTasbih.classList.remove('opacity-0', 'pointer-events-none');
+                modalTasbih.firstElementChild.classList.remove('scale-95');
+            }, 10);
+        });
+
+        closeTasbih.addEventListener('click', () => {
+            modalTasbih.classList.add('opacity-0');
+            modalTasbih.firstElementChild.classList.add('scale-95');
+            setTimeout(() => {
+                modalTasbih.classList.add('hidden', 'pointer-events-none');
+            }, 300);
+        });
+
+        btnTap.addEventListener('click', () => {
+            tasbihCountValue++;
+            updateTasbihDisplay();
+        });
+
+        btnReset.addEventListener('click', () => {
+            tasbihCountValue = 0;
+            updateTasbihDisplay();
+        });
+
+        // --- 3. Logika Dinamis Jadwal Sholat & Hitung Mundur Real-time ---
+        // Data jadwal (contoh statis, di aplikasi nyata bisa diambil dari API)
+        const prayerData = [
+            { id: "imsak", name: "Imsak", time: "04:28", icon: "fa-cloud-moon" },
+            { id: "subuh", name: "Subuh", time: "04:38", icon: "fa-moon" },
+            { id: "dzuhur", name: "Dzuhur", time: "11:57", icon: "fa-sun" },
+            { id: "ashar", name: "Ashar", time: "15:13", icon: "fa-cloud-sun" },
+            { id: "maghrib", name: "Maghrib", time: "18:02", icon: "fa-sunset" },
+            { id: "isya", name: "Isya", time: "19:12", icon: "fa-star-and-crescent" }
+        ];
+
+        function renderPrayerTimes(activePrayerIndex) {
+            const container = document.getElementById('prayer-times-container');
+            container.innerHTML = ''; 
+            
+            prayerData.forEach((prayer, index) => {
+                const isActive = index === activePrayerIndex;
+                const cardClass = isActive 
+                    ? "min-w-[85px] md:min-w-0 md:w-full bg-r-blue/20 border border-r-cyan rounded-2xl p-4 flex flex-col items-center justify-center gap-2 shrink-0 md:shrink relative shadow-[0_0_15px_rgba(0,255,212,0.15)]" 
+                    : "min-w-[85px] md:min-w-0 md:w-full bg-r-light/5 border border-r-light/10 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 shrink-0 md:shrink";
+                
+                const textClass = isActive ? "text-r-cyan font-medium" : "text-r-light/60";
+                const iconClass = isActive ? `fa-solid ${prayer.icon} text-r-cyan text-lg md:text-2xl` : `fa-solid ${prayer.icon} text-r-light/40 text-lg md:text-2xl`;
+                const dotHtml = isActive ? `<div class="absolute -top-1 -right-1 w-3 h-3 bg-r-cyan rounded-full border-2 border-r-dark shadow-[0_0_10px_#00FFD4]"></div>` : '';
+
+                container.innerHTML += `
+                    <div class="${cardClass}" id="card-${prayer.id}">
+                        ${dotHtml}
+                        <span class="text-xs md:text-sm ${textClass}">${prayer.name}</span>
+                        <i class="${iconClass}"></i>
+                        <span class="text-sm md:text-base font-semibold text-white">${prayer.time}</span>
+                    </div>
+                `;
+            });
+            
+            // Otomatis scroll ke jadwal yang sedang aktif (Target selanjutnya) (hanya efek untuk mobile)
+            const activeCard = document.getElementById(`card-${prayerData[activePrayerIndex].id}`);
+            if(activeCard && window.innerWidth < 768) {
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        function updateRealTimeCountdown() {
+            const now = new Date();
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentSeconds = now.getSeconds();
+            const currentTimeInMins = (currentHours * 60) + currentMinutes;
+
+            let nextPrayerIndex = 0;
+            let nextPrayerMinutes = 24 * 60; // Default: Hari berikutnya
+            
+            // Mencari waktu sholat terdekat berdasarkan jam perangkat saat ini
+            for (let i = 0; i < prayerData.length; i++) {
+                const [h, m] = prayerData[i].time.split(':').map(Number);
+                const pMinutes = (h * 60) + m;
+                
+                if (pMinutes > currentTimeInMins || (pMinutes === currentTimeInMins && currentSeconds === 0)) {
+                    nextPrayerIndex = i;
+                    nextPrayerMinutes = pMinutes;
+                    break;
+                }
+            }
+
+            // Jika semua jadwal hari ini sudah lewat, targetnya Imsak besok
+            if (nextPrayerMinutes === 24 * 60) {
+                const [h, m] = prayerData[0].time.split(':').map(Number);
+                nextPrayerMinutes = (24 * 60) + (h * 60) + m;
+                nextPrayerIndex = 0;
+            }
+
+            // Hitung selisih waktu
+            let diffMinutes = nextPrayerMinutes - currentTimeInMins - 1;
+            let diffSeconds = 60 - currentSeconds;
+            
+            if (diffSeconds === 60) {
+                diffSeconds = 0;
+                diffMinutes += 1;
+            }
+
+            const hoursLeft = Math.floor(diffMinutes / 60);
+            const minsLeft = diffMinutes % 60;
+
+            // Perbarui UI Hero (Banner Atas)
+            const nextPrayer = prayerData[nextPrayerIndex];
+            document.getElementById('hero-prayer-name').innerText = `Menuju ${nextPrayer.name}`;
+            document.getElementById('hero-prayer-time').innerText = `${nextPrayer.time} WIB`;
+            
+            const hStr = String(hoursLeft).padStart(2, '0');
+            const mStr = String(minsLeft).padStart(2, '0');
+            const sStr = String(diffSeconds).padStart(2, '0');
+            document.getElementById('countdown').innerText = `${hStr}:${mStr}:${sStr}`;
+
+            // Logika Progress Bar (Perkiraan visual saja)
+            let maxGap = 180; // Asumsi rata-rata jeda waktu sholat 3 jam
+            let passed = maxGap - diffMinutes;
+            let percent = (passed / maxGap) * 100;
+            if(percent < 0) percent = 0;
+            if(percent > 100) percent = 100;
+            document.getElementById('hero-progress').style.width = `${percent}%`;
+
+            // Hanya render ulang kartu jadwal bawah jika target jadwal sholat berubah
+            if (window.currentActivePrayerIndex !== nextPrayerIndex) {
+                window.currentActivePrayerIndex = nextPrayerIndex;
+                renderPrayerTimes(nextPrayerIndex);
+            }
+        }
+
+        // Inisialisasi awal dan jalankan interval setiap detik
+        updateRealTimeCountdown();
+        setInterval(updateRealTimeCountdown, 1000);
+
+        // --- 4. Logika Kalender Puasa ---
+        let puasaData = Array(30).fill(false);
+        const currentHariRamadhan = 14; 
+        
+        // Simulasi data puasa sebelumnya (hari 1 sampai 13 sudah puasa)
+        for(let i = 0; i < currentHariRamadhan - 1; i++) {
+            puasaData[i] = true;
+        }
+
+        function renderKalender() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            // Offset untuk menyimulasikan mulai hari (misal mulai dari hari Selasa = 2 empty cells)
+            const emptyCellsStart = 2; 
+            for(let i = 0; i < emptyCellsStart; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            for(let day = 1; day <= 30; day++) {
+                const isPuasa = puasaData[day - 1];
+                const isToday = day === currentHariRamadhan;
+                const isFuture = day > currentHariRamadhan;
+                
+                let btnClass = "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xs md:text-sm mx-auto transition-all ";
+                
+                if(isPuasa) {
+                    btnClass += "bg-r-cyan/20 text-r-cyan border border-r-cyan/50 shadow-[0_0_10px_rgba(0,255,212,0.1)]";
+                } else if (isToday) {
+                    btnClass += "bg-r-light/10 text-white border border-white/40 ring-2 ring-r-blue/50";
+                } else if (isFuture) {
+                    btnClass += "bg-transparent text-r-light/30 border border-transparent";
+                } else {
+                    btnClass += "bg-red-500/10 text-red-400 border border-red-500/30"; // Bolong puasa
+                }
+
+                // Jika hari berlalu atau hari ini, bisa di-klik untuk toggle manual
+                const onClickStr = !isFuture ? `onclick="toggleManualPuasa(${day - 1})"` : '';
+                const cursorCls = !isFuture ? "cursor-pointer hover:scale-110" : "cursor-default";
+
+                grid.innerHTML += `
+                    <div class="flex items-center justify-center py-1 md:py-2">
+                        <button class="${btnClass} ${cursorCls}" ${onClickStr} title="Hari ke-${day}">
+                            ${day}
+                        </button>
+                    </div>
+                `;
+            }
+            
+            updateHomeStats();
+        }
+
+        function toggleManualPuasa(index) {
+            puasaData[index] = !puasaData[index];
+            if(index === currentHariRamadhan - 1) {
+                document.getElementById('toggle-puasa-hari-ini').checked = puasaData[index];
+            }
+            renderKalender();
+        }
+
+        function togglePuasaToday() {
+            const isChecked = document.getElementById('toggle-puasa-hari-ini').checked;
+            puasaData[currentHariRamadhan - 1] = isChecked;
+            renderKalender();
+        }
+
+        function updateHomeStats() {
+            const totalPuasa = puasaData.filter(v => v).length;
+            const percent = (totalPuasa / 30) * 100;
+            
+            const countEl = document.getElementById('home-puasa-count');
+            const barEl = document.getElementById('home-puasa-bar');
+            
+            if(countEl) countEl.innerText = totalPuasa;
+            if(barEl) barEl.style.width = percent + '%';
+        }
+
+        // Inisialisasi kalender
+        document.getElementById('toggle-puasa-hari-ini').checked = puasaData[currentHariRamadhan - 1];
+        renderKalender();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  city         String        @default("Jakarta, Indonesia")
+  createdAt    DateTime      @default(now())
+  puasaLogs    PuasaLog[]
+  quranHistory QuranHistory?
+}
+
+model PuasaLog {
+  id     String  @id @default(cuid())
+  userId String
+  day    Int
+  fasted Boolean @default(false)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day])
+}
+
+model QuranHistory {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  surahNomor Int
+  surahNama  String
+  ayatNomor  Int
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
