@@ -4,6 +4,8 @@ import Header from '@/app/components/Header';
 import BottomNav from '@/app/components/BottomNav';
 import TasbihModal from '@/app/components/TasbihModal';
 import LocationModal from '@/app/components/LocationModal';
+import NotificationPanel from '@/app/components/NotificationPanel';
+import NotificationManager from '@/app/components/NotificationManager';
 
 export default function MainLayout({
   children,
@@ -21,6 +23,8 @@ export default function MainLayout({
           <BottomNav />
           <TasbihModal />
           <LocationModal />
+          <NotificationPanel />
+          <NotificationManager />
         </div>
       </PrayerTimesProvider>
     </PuasaProvider>
