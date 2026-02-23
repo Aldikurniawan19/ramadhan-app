@@ -118,7 +118,7 @@ export default function LoginPage() {
         Ramadhan 1447 H • Semoga ibadah kita diterima
       </p>
       <p className="text-center text-r-light/30 text-xs mt-8">
-        © {new Date().getFullYear()} <a href="https://github.com/ramadhan-app" target="_blank" rel="noopener noreferrer" className="text-r-cyan hover:underline font-medium">Ramadhan App</a> by <a href="https://github.com/aldikurniawan19" target="_blank" rel="noopener noreferrer" className="text-r-cyan hover:underline font-medium">Aldikurniawan</a>
+        © {new Date().getFullYear()} <a href="https://github.com/aldikurniawan19/ramadhan-app" target="_blank" rel="noopener noreferrer" className="text-r-cyan hover:underline font-medium">Ramadhan App</a> by <a href="https://github.com/aldikurniawan19" target="_blank" rel="noopener noreferrer" className="text-r-cyan hover:underline font-medium">Aldikurniawan</a>
       </p>
     </div>
   );
