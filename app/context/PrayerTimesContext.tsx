@@ -21,7 +21,7 @@ const DEFAULT_PRAYER_DATA: PrayerTime[] = [
   { id: 'subuh', name: 'Subuh', time: '04:38', icon: 'fa-moon' },
   { id: 'dzuhur', name: 'Dzuhur', time: '11:57', icon: 'fa-sun' },
   { id: 'ashar', name: 'Ashar', time: '15:13', icon: 'fa-cloud-sun' },
-  { id: 'maghrib', name: 'Maghrib', time: '18:02', icon: 'fa-sunset' },
+  { id: 'maghrib', name: 'Maghrib', time: '18:02', icon: 'fa-sun-plant-wilt' },
   { id: 'isya', name: 'Isya', time: '19:12', icon: 'fa-star-and-crescent' },
 ];
 

@@ -46,7 +46,7 @@ export async function GET() {
       { id: 'subuh', name: 'Subuh', time: t.Fajr?.substring(0, 5), icon: 'fa-moon' },
       { id: 'dzuhur', name: 'Dzuhur', time: t.Dhuhr?.substring(0, 5), icon: 'fa-sun' },
       { id: 'ashar', name: 'Ashar', time: t.Asr?.substring(0, 5), icon: 'fa-cloud-sun' },
-      { id: 'maghrib', name: 'Maghrib', time: t.Maghrib?.substring(0, 5), icon: 'fa-sunset' },
+      { id: 'maghrib', name: 'Maghrib', time: t.Maghrib?.substring(0, 5), icon: 'fa-sun-plant-wilt' },
       { id: 'isya', name: 'Isya', time: t.Isha?.substring(0, 5), icon: 'fa-star-and-crescent' },
     ];
 
@@ -64,7 +64,7 @@ export async function GET() {
         { id: 'subuh', name: 'Subuh', time: '04:38', icon: 'fa-moon' },
         { id: 'dzuhur', name: 'Dzuhur', time: '11:57', icon: 'fa-sun' },
         { id: 'ashar', name: 'Ashar', time: '15:13', icon: 'fa-cloud-sun' },
-        { id: 'maghrib', name: 'Maghrib', time: '18:02', icon: 'fa-sunset' },
+        { id: 'maghrib', name: 'Maghrib', time: '18:02', icon: 'fa-sun-plant-wilt' },
         { id: 'isya', name: 'Isya', time: '19:12', icon: 'fa-star-and-crescent' },
       ],
       city: 'Jakarta, Indonesia',
