@@ -17,7 +17,7 @@ export default function MainLayout({
       <PrayerTimesProvider>
         <div className="w-full min-h-screen flex flex-col relative bg-r-dark">
           <Header />
-          <main className="flex-1 w-full pb-28 relative overflow-x-hidden">
+          <main className="flex-1 w-full relative overflow-x-hidden" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom, 0px))' }}>
             {children}
           </main>
           <BottomNav />

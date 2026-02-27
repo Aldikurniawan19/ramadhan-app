@@ -19,8 +19,11 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 w-full bg-r-dark/95 backdrop-blur-md border-t border-r-light/10 z-20">
-      <div className="max-w-5xl mx-auto px-6 py-4 pb-8 sm:pb-6">
+    <nav
+      className="fixed bottom-0 left-0 right-0 w-full bg-r-dark/95 backdrop-blur-md border-t border-r-light/10 z-20"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
+      <div className="max-w-5xl mx-auto px-6 py-3">
         <ul className="flex justify-between items-center relative">
           {/* Beranda */}
           <li>
