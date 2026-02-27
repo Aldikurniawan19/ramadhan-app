@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export interface AppNotification {
   id: string;
-  type: 'iftar' | 'imsak' | 'tadarus' | 'puasa';
+  type: 'iftar' | 'imsak' | 'tadarus' | 'puasa' | 'sholat';
   title: string;
   message: string;
   icon: string;
@@ -101,17 +101,18 @@ export default function NotificationPanel() {
     imsak: { bg: 'bg-purple-500/15', text: 'text-purple-400' },
     tadarus: { bg: 'bg-r-blue/15', text: 'text-r-blue' },
     puasa: { bg: 'bg-r-cyan/15', text: 'text-r-cyan' },
+    sholat: { bg: 'bg-emerald-500/15', text: 'text-emerald-400' },
   };
 
   return (
     <>
-      {/* Subtle backdrop — click to close */}
-      <div className="fixed inset-0 z-[90]" onClick={() => setIsOpen(false)} />
+      {/* Backdrop — matches location modal */}
+      <div className="fixed inset-0 z-[90] bg-black/70 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
 
-      {/* Dropdown Panel — glass card anchored top-right */}
+      {/* Dropdown Panel */}
       <div
         ref={panelRef}
-        className="fixed top-20 right-4 md:right-8 z-[100] w-[calc(100%-2rem)] max-w-sm bg-white/[0.06] backdrop-blur-2xl border border-white/[0.12] rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-dropdown"
+        className="fixed top-20 right-4 md:right-8 z-[100] w-[calc(100%-2rem)] max-w-sm bg-[#1a1b2e]/95 backdrop-blur-xl border border-white/[0.1] rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden animate-dropdown"
         style={{ maxHeight: 'min(480px, calc(100vh - 8rem))' }}
       >
         {/* Header */}

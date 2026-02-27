@@ -108,7 +108,7 @@ export default function HomePage() {
         {/* Prayer Times */}
         <div className="mb-4 flex justify-between items-end">
           <h3 className="text-lg md:text-xl font-semibold text-white">Jadwal Sholat</h3>
-          <span className="text-xs md:text-sm text-r-cyan cursor-pointer hover:underline">Lihat Semua</span>
+          <Link href="/jadwal-sholat" className="text-xs md:text-sm text-r-cyan cursor-pointer hover:underline">Lihat Semua</Link>
         </div>
         <PrayerTimesGrid />
 

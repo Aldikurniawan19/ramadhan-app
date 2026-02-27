@@ -160,7 +160,7 @@ export default function QuranPage() {
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs md:text-sm">
                   <span className="text-r-light/50">Ayat Dibaca</span>
-                  <span className="text-white font-medium">{ayatRead.toLocaleString()} <span className="text-r-light/40">/ {TOTAL_AYAT.toLocaleString()}</span></span>
+                  <span className="text-white font-medium">{ayatRead.toLocaleString('id-ID')} <span className="text-r-light/40">/ {TOTAL_AYAT.toLocaleString('id-ID')}</span></span>
                 </div>
                 <div className="flex justify-between text-xs md:text-sm">
                   <span className="text-r-light/50">Surah Selesai</span>

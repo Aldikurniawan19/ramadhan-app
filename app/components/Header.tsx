@@ -24,12 +24,10 @@ export default function Header() {
           className="relative w-10 h-10 rounded-full bg-r-light/5 flex items-center justify-center hover:bg-r-light/10 transition"
         >
           <i className="fa-regular fa-bell text-r-light"></i>
-          {unreadCount > 0 ? (
+          {unreadCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-r-cyan text-r-dark text-[10px] font-bold rounded-full flex items-center justify-center px-1">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
-          ) : (
-            <span className="absolute top-2 right-2.5 w-2 h-2 bg-r-cyan rounded-full"></span>
           )}
         </button>
       </div>

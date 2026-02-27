@@ -51,7 +51,7 @@ export default function BottomNav() {
           {/* Floating Center Mosque Button */}
           <li className="relative -top-5 md:-top-7">
             <Link
-              href="/"
+              href="/jadwal-sholat"
               className="w-14 h-14 md:w-16 md:h-16 bg-r-blue rounded-full flex items-center justify-center text-white shadow-[0_5px_20px_rgba(84,101,255,0.4)] hover:scale-105 transition-transform border-4 border-r-dark"
             >
               <i className="fa-solid fa-mosque text-xl md:text-2xl"></i>

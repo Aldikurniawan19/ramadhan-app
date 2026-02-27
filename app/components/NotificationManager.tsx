@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { usePrayerTimes } from '@/app/context/PrayerTimesContext';
 import { usePuasa } from '@/app/context/PuasaContext';
 import { addNotification, type AppNotification } from './NotificationPanel';
@@ -41,9 +41,42 @@ function parseTime(timeStr: string): { h: number; m: number } | null {
   return { h, m };
 }
 
+/** Convert HH:MM string to total minutes since midnight */
+function timeToMinutes(timeStr: string): number | null {
+  const parsed = parseTime(timeStr);
+  if (!parsed) return null;
+  return parsed.h * 60 + parsed.m;
+}
+
+function currentMinutesSinceMidnight(): number {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
 function currentHHMM(): string {
   const now = new Date();
   return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+}
+
+/** Check if current time is within ±1 minute of a trigger time (handles midnight wrap) */
+function isWithinTriggerWindow(triggerTimeStr: string): boolean {
+  const triggerMin = timeToMinutes(triggerTimeStr);
+  if (triggerMin === null) return false;
+  const nowMin = currentMinutesSinceMidnight();
+  const diff = Math.abs(nowMin - triggerMin);
+  // Handle midnight wrap (e.g. trigger at 23:59, now at 00:00 → diff = 1439, actual = 1)
+  return diff <= 1 || diff >= 1439;
+}
+
+/** Subtract N minutes from a time string and return new "HH:MM" */
+function subtractMinutes(timeStr: string, minutes: number): string | null {
+  const parsed = parseTime(timeStr);
+  if (!parsed) return null;
+  let totalMin = parsed.h * 60 + parsed.m - minutes;
+  if (totalMin < 0) totalMin += 1440; // wrap around midnight
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
 // Request browser notification permission
@@ -74,6 +107,7 @@ function sendBrowserNotification(title: string, body: string, icon?: string) {
 
 interface NotifConfig {
   type: AppNotification['type'];
+  id: string; // unique id for dedup per day (e.g. 'sholat-subuh')
   triggerTime: string; // "HH:MM"
   title: string;
   message: string;
@@ -81,18 +115,46 @@ interface NotifConfig {
   href: string;
 }
 
+interface QuranHistoryData {
+  surahNomor: number;
+  surahNama: string;
+  ayatNomor: number;
+}
+
 export default function NotificationManager() {
   const { prayerData, isLoading: prayerLoading } = usePrayerTimes();
   const { currentHariRamadhan, puasaData } = usePuasa();
   const hasRequestedPermission = useRef(false);
+  const [quranHistory, setQuranHistory] = useState<QuranHistoryData | null>(null);
+  const quranHistoryFetched = useRef(false);
 
   // Request permission on mount
   useEffect(() => {
     if (!hasRequestedPermission.current) {
       hasRequestedPermission.current = true;
-      // Delay permission request slightly
       setTimeout(requestNotifPermission, 3000);
     }
+  }, []);
+
+  // Fetch Quran reading history once on mount
+  useEffect(() => {
+    if (quranHistoryFetched.current) return;
+    quranHistoryFetched.current = true;
+
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch('/api/quran-history');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.history) {
+            setQuranHistory(json.history);
+          }
+        }
+      } catch {
+        // silently fail — history is non-critical
+      }
+    };
+    fetchHistory();
   }, []);
 
   const checkAndSendNotifications = useCallback(() => {
@@ -101,28 +163,27 @@ export default function NotificationManager() {
     const now = currentHHMM();
     const sent = getSentToday();
 
-    // Find imsak and maghrib times
+    // Find prayer times
     const imsakEntry = prayerData.find((p) => p.id === 'imsak');
+    const subuhEntry = prayerData.find((p) => p.id === 'subuh');
+    const dzuhurEntry = prayerData.find((p) => p.id === 'dzuhur');
+    const asharEntry = prayerData.find((p) => p.id === 'ashar');
     const maghribEntry = prayerData.find((p) => p.id === 'maghrib');
+    const isyaEntry = prayerData.find((p) => p.id === 'isya');
 
     // Build notification configs
     const notifConfigs: NotifConfig[] = [];
 
-    // 1. Imsak warning (10 min before)
+    // 1. Imsak warning (5 min before)
     if (imsakEntry) {
-      const parsed = parseTime(imsakEntry.time);
-      if (parsed) {
-        let warnH = parsed.h;
-        let warnM = parsed.m - 10;
-        if (warnM < 0) { warnM += 60; warnH -= 1; }
-        if (warnH < 0) warnH += 24;
-        const warnTime = `${String(warnH).padStart(2, '0')}:${String(warnM).padStart(2, '0')}`;
-
+      const warnTime = subtractMinutes(imsakEntry.time, 5);
+      if (warnTime) {
         notifConfigs.push({
           type: 'imsak',
+          id: 'imsak',
           triggerTime: warnTime,
-          title: 'Waktu Imsak Hampir Tiba',
-          message: `10 menit lagi waktu imsak (${imsakEntry.time}). Segera selesaikan sahur! 🌙`,
+          title: 'Waktu Imsak Hampir Tiba ⏰',
+          message: `5 menit lagi waktu imsak (${imsakEntry.time}). Segera selesaikan sahur! 🌙`,
           icon: 'fa-solid fa-cloud-moon',
           href: '/',
         });
@@ -133,6 +194,7 @@ export default function NotificationManager() {
     if (maghribEntry) {
       notifConfigs.push({
         type: 'iftar',
+        id: 'iftar',
         triggerTime: maghribEntry.time,
         title: 'Waktunya Berbuka Puasa! 🌙',
         message: `Alhamdulillah, waktu berbuka puasa telah tiba (${maghribEntry.time}). Selamat berbuka!`,
@@ -141,21 +203,53 @@ export default function NotificationManager() {
       });
     }
 
-    // 3. Tadarus reminder (20:00)
+    // 3. Prayer time notifications for all 5 prayers
+    const prayerNotifs: Array<{ entry: typeof subuhEntry; name: string; idSuffix: string; emoji: string }> = [
+      { entry: subuhEntry, name: 'Subuh', idSuffix: 'subuh', emoji: '🌅' },
+      { entry: dzuhurEntry, name: 'Dzuhur', idSuffix: 'dzuhur', emoji: '☀️' },
+      { entry: asharEntry, name: 'Ashar', idSuffix: 'ashar', emoji: '🌤️' },
+      { entry: maghribEntry, name: 'Maghrib', idSuffix: 'maghrib', emoji: '🌇' },
+      { entry: isyaEntry, name: 'Isya', idSuffix: 'isya', emoji: '🌙' },
+    ];
+
+    for (const prayer of prayerNotifs) {
+      if (prayer.entry) {
+        notifConfigs.push({
+          type: 'sholat',
+          id: `sholat-${prayer.idSuffix}`,
+          triggerTime: prayer.entry.time,
+          title: `Waktu Sholat ${prayer.name} ${prayer.emoji}`,
+          message: `Waktu sholat ${prayer.name} telah tiba (${prayer.entry.time}). Ayo tunaikan sholat! 🕌`,
+          icon: 'fa-solid fa-mosque',
+          href: '/',
+        });
+      }
+    }
+
+    // 4. Tadarus reminder (20:00) — with last-read Quran data
+    const tadarusMessage = quranHistory
+      ? `Lanjutkan membaca Surah ${quranHistory.surahNama} ayat ${quranHistory.ayatNomor}. Setiap huruf bernilai pahala! 📖`
+      : 'Sempatkan membaca Al-Quran malam ini. Setiap huruf bernilai pahala! 📖';
+    const tadarusHref = quranHistory
+      ? `/quran/${quranHistory.surahNomor}`
+      : '/quran';
+
     notifConfigs.push({
       type: 'tadarus',
+      id: 'tadarus',
       triggerTime: '20:00',
       title: 'Yuk Lanjutkan Tadarus! 📖',
-      message: 'Sempatkan membaca Al-Quran malam ini. Setiap huruf bernilai pahala!',
+      message: tadarusMessage,
       icon: 'fa-solid fa-book-quran',
-      href: '/quran',
+      href: tadarusHref,
     });
 
-    // 4. Puasa calendar reminder (07:00)
+    // 5. Puasa calendar reminder (07:00)
     const todayPuasa = puasaData[currentHariRamadhan - 1];
     if (!todayPuasa) {
       notifConfigs.push({
         type: 'puasa',
+        id: 'puasa',
         triggerTime: '07:00',
         title: 'Tandai Puasa Hari Ini ✅',
         message: `Hari ke-${currentHariRamadhan} Ramadhan. Sudah puasa? Tandai di kalender!`,
@@ -164,14 +258,14 @@ export default function NotificationManager() {
       });
     }
 
-    // Check each config
+    // Check each config using ±1 minute window
     for (const config of notifConfigs) {
-      if (sent.has(config.type)) continue;
-      if (now !== config.triggerTime) continue;
+      if (sent.has(config.id)) continue;
+      if (!isWithinTriggerWindow(config.triggerTime)) continue;
 
       // Match! Send notification
       const notif: AppNotification = {
-        id: `${config.type}-${Date.now()}`,
+        id: `${config.id}-${Date.now()}`,
         type: config.type,
         title: config.title,
         message: config.message,
@@ -184,9 +278,9 @@ export default function NotificationManager() {
 
       addNotification(notif);
       sendBrowserNotification(config.title, config.message);
-      markSentToday(config.type);
+      markSentToday(config.id);
     }
-  }, [prayerData, prayerLoading, puasaData, currentHariRamadhan]);
+  }, [prayerData, prayerLoading, puasaData, currentHariRamadhan, quranHistory]);
 
   // Poll every 30 seconds
   useEffect(() => {
