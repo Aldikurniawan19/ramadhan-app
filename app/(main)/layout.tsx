@@ -15,7 +15,7 @@ export default function MainLayout({
   return (
     <PuasaProvider>
       <PrayerTimesProvider>
-        <div className="w-full min-h-screen flex flex-col relative bg-r-dark">
+        <div className="w-full flex flex-col relative bg-r-dark" style={{ minHeight: '100dvh' }}>
           <Header />
           <main className="flex-1 w-full relative overflow-x-hidden" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom, 0px))' }}>
             {children}
