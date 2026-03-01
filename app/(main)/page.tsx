@@ -2,6 +2,7 @@
 
 import HeroCountdown from '@/app/components/HeroCountdown';
 import PrayerTimesGrid from '@/app/components/PrayerTimesGrid';
+import EidCountdown from '@/app/components/EidCountdown';
 import StatsCard from '@/app/components/StatsCard';
 import { openTasbihModal } from '@/app/components/TasbihModal';
 import { usePuasa } from '@/app/context/PuasaContext';
@@ -98,6 +99,9 @@ export default function HomePage() {
             <span className="text-[11px] md:text-sm font-medium text-r-light/80">Kiblat</span>
           </Link>
         </div>
+
+        {/* Eid Countdown */}
+        <EidCountdown />
 
         {/* Ibadah Summary */}
         <div className="mb-4 flex justify-between items-end">
