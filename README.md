@@ -40,6 +40,15 @@ Aplikasi ini dapat diinstal di perangkat mobile seperti aplikasi native — tanp
 - **Riwayat bacaan** — otomatis menyimpan terakhir dibaca (surah & ayat) ke database
 - **Progress tracking** — menampilkan persentase Al-Quran yang telah dibaca
 
+### 🎧 Murottal Al-Qur'an
+- **Audio per ayat** — tombol play di setiap ayat, putar murottal individual
+- **Audio full surah** — putar seluruh surah dalam satu klik
+- **6 pilihan qari** — Abdullah Al-Juhany, Abdul Muhsin Al-Qasim, Abdurrahman as-Sudais, Ibrahim Al-Dossari, Misyari Rasyid Al-Afasi, Yasser Al-Dosari
+- **Sticky audio player** — desain glassmorphism, muncul di atas bottom nav dengan play/pause, prev/next, seekbar
+- **Auto-play** — otomatis lanjut ke ayat berikutnya
+- **Highlight ayat aktif** — border glow animasi dan auto-scroll ke ayat yang sedang diputar
+- Menggunakan API **equran.id/api/v2** (sama dengan fitur Al-Quran)
+
 ### 🤲 Doa Harian
 - Koleksi doa-doa harian lengkap dengan **teks Arab, Latin, dan terjemahan**
 - Fitur **pencarian** doa berdasarkan judul
@@ -68,6 +77,11 @@ Aplikasi ini dapat diinstal di perangkat mobile seperti aplikasi native — tanp
 ### 📝 Ayat Hari Ini
 - **30 ayat pilihan** — satu untuk setiap hari Ramadhan
 - Rotasi otomatis berdasarkan hari ke-berapa Ramadhan
+
+### 🌗 Dark / Light Mode
+- Toggle **tema gelap dan terang** dari halaman profil
+- Tema terang menggunakan palet warna **Cyan (#00FFD4)** dan **Light (#D2DDFF)**
+- Transisi smooth antar tema
 
 ### 👤 Profil & Autentikasi
 - Sistem **registrasi & login** lengkap
@@ -132,9 +146,11 @@ ramadhan/
 │   │   ├── register/route.ts   # Registrasi user baru
 │   │   └── user/               # Update data user
 │   ├── components/              # Komponen UI
+│   │   ├── AudioPlayer.tsx      # Sticky audio player murottal
 │   │   ├── AuthProvider.tsx     # NextAuth session provider
 │   │   ├── BottomNav.tsx        # Navigasi bawah mobile
 │   │   ├── CalendarGrid.tsx     # Grid kalender puasa
+│   │   ├── EidCountdown.tsx     # Countdown Hari Raya Idul Fitri
 │   │   ├── Header.tsx           # Header dengan lokasi & notifikasi
 │   │   ├── HeroCountdown.tsx    # Countdown sholat berikutnya
 │   │   ├── LocationModal.tsx    # Modal pemilih kota
