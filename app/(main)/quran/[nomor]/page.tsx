@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { SurahDetail, Ayat } from '@/lib/quran';
+import AudioPlayer, { type PlayMode } from '@/app/components/AudioPlayer';
 
 export default function SurahDetailPage() {
   const params = useParams();
@@ -16,6 +17,25 @@ export default function SurahDetailPage() {
   const [bookmarkedAyat, setBookmarkedAyat] = useState<number | null>(null);
   const [savingAyat, setSavingAyat] = useState<number | null>(null);
   const [toastMessage, setToastMessage] = useState('');
+
+  // Audio state
+  const [playerVisible, setPlayerVisible] = useState(false);
+  const [playMode, setPlayMode] = useState<PlayMode>('ayat');
+  const [currentAyatIndex, setCurrentAyatIndex] = useState<number | null>(null);
+  const [selectedQari, setSelectedQari] = useState('05'); // default: Misyari Rasyid Al-Afasi
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+
+  const ayatRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  // Scroll to active ayat when it changes
+  useEffect(() => {
+    if (currentAyatIndex !== null && playerVisible) {
+      const ayatEl = ayatRefs.current.get(currentAyatIndex);
+      if (ayatEl) {
+        ayatEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [currentAyatIndex, playerVisible]);
 
   // Fetch current bookmark for this surah
   const fetchBookmark = useCallback(async () => {
@@ -52,6 +72,11 @@ export default function SurahDetailPage() {
       }
     };
 
+    // Reset audio state on surah change
+    setPlayerVisible(false);
+    setCurrentAyatIndex(null);
+    setIsAudioPlaying(false);
+
     fetchSurah();
     fetchBookmark();
   }, [nomor, fetchBookmark]);
@@ -84,6 +109,28 @@ export default function SurahDetailPage() {
     }
   };
 
+  const handlePlayAyat = (index: number) => {
+    if (playerVisible && playMode === 'ayat' && currentAyatIndex === index && isAudioPlaying) {
+      // If same ayat is playing, let the player handle pause
+      return;
+    }
+    setPlayMode('ayat');
+    setCurrentAyatIndex(index);
+    setPlayerVisible(true);
+  };
+
+  const handlePlayFullSurah = () => {
+    setPlayMode('surah');
+    setCurrentAyatIndex(null);
+    setPlayerVisible(true);
+  };
+
+  const handleClosePlayer = () => {
+    setPlayerVisible(false);
+    setCurrentAyatIndex(null);
+    setIsAudioPlaying(false);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 px-6">
@@ -106,7 +153,7 @@ export default function SurahDetailPage() {
   }
 
   return (
-    <div className="pb-6 px-6">
+    <div className={`pb-6 px-6 ${playerVisible ? 'pb-36' : ''}`}>
       <div className="max-w-3xl mx-auto w-full">
 
         {/* Back Button + Header */}
@@ -128,6 +175,39 @@ export default function SurahDetailPage() {
           </div>
         </div>
 
+        {/* Murottal Full Surah Button */}
+        <button
+          onClick={handlePlayFullSurah}
+          className={`w-full mb-6 flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border transition group ${
+            playerVisible && playMode === 'surah'
+              ? 'bg-gradient-to-r from-r-blue/20 to-r-cyan/10 border-r-cyan/30 shadow-[0_0_20px_rgba(0,212,170,0.1)]'
+              : 'bg-r-light/5 border-r-light/10 hover:bg-r-light/10 hover:border-r-light/20'
+          }`}
+        >
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center transition ${
+            playerVisible && playMode === 'surah'
+              ? 'bg-gradient-to-br from-r-blue to-r-cyan shadow-[0_2px_10px_rgba(84,101,255,0.4)]'
+              : 'bg-r-blue/20 group-hover:bg-r-blue/30'
+          }`}>
+            <i className={`fa-solid ${
+              playerVisible && playMode === 'surah' && isAudioPlaying ? 'fa-pause' : 'fa-play'
+            } text-white text-xs ${!(playerVisible && playMode === 'surah' && isAudioPlaying) ? 'ml-0.5' : ''}`}></i>
+          </div>
+          <div className="text-left">
+            <p className={`text-sm font-medium transition ${
+              playerVisible && playMode === 'surah' ? 'text-r-cyan' : 'text-white group-hover:text-r-cyan'
+            }`}>
+              Murottal {surah.namaLatin}
+            </p>
+            <p className="text-[10px] text-r-light/40">
+              Dengarkan full surah
+            </p>
+          </div>
+          <i className={`fa-solid fa-headphones ml-auto text-lg transition ${
+            playerVisible && playMode === 'surah' ? 'text-r-cyan' : 'text-r-light/20 group-hover:text-r-light/40'
+          }`}></i>
+        </button>
+
         {/* Bismillah Card (skip for At-Taubah / surah 9) */}
         {nomor !== 9 && (
           <div className="bg-gradient-to-br from-r-blue to-[#2b358a] rounded-2xl p-6 md:p-8 text-center mb-6 relative overflow-hidden shadow-[0_5px_20px_rgba(84,101,255,0.25)]">
@@ -144,76 +224,99 @@ export default function SurahDetailPage() {
 
         {/* Ayat List */}
         <div className="space-y-4">
-          {surah.ayat.map((ayat: Ayat) => (
-            <div
-              key={ayat.nomorAyat}
-              className={`bg-r-light/5 border rounded-2xl p-5 md:p-6 hover:border-r-light/20 transition ${
-                bookmarkedAyat === ayat.nomorAyat
-                  ? 'border-r-cyan/40 bg-r-cyan/5'
-                  : 'border-r-light/10'
-              }`}
-            >
-              {/* Ayat Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-r-blue/20 flex items-center justify-center">
-                    <span className="text-xs md:text-sm font-semibold text-r-cyan">{ayat.nomorAyat}</span>
-                  </div>
-                  <span className="text-[10px] md:text-xs text-r-light/40">
-                    {surah.namaLatin} : {ayat.nomorAyat}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Bookmark Button */}
-                  <button
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
-                      bookmarkedAyat === ayat.nomorAyat
-                        ? 'bg-r-cyan/20 text-r-cyan'
-                        : 'bg-r-light/5 text-r-light/40 hover:text-r-cyan hover:bg-r-light/10'
-                    }`}
-                    title="Tandai terakhir dibaca"
-                    onClick={() => handleBookmark(ayat)}
-                    disabled={savingAyat === ayat.nomorAyat}
-                  >
-                    {savingAyat === ayat.nomorAyat ? (
-                      <i className="fa-solid fa-spinner fa-spin text-xs"></i>
-                    ) : (
-                      <i className={`fa-${bookmarkedAyat === ayat.nomorAyat ? 'solid' : 'regular'} fa-bookmark text-xs`}></i>
-                    )}
-                  </button>
-                  {/* Copy Button */}
-                  <button
-                    className="w-8 h-8 rounded-full bg-r-light/5 flex items-center justify-center text-r-light/40 hover:text-r-cyan hover:bg-r-light/10 transition"
-                    title="Salin ayat"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${ayat.teksArab}\n\n${ayat.teksIndonesia}\n\n(${surah.namaLatin}: ${ayat.nomorAyat})`);
-                    }}
-                  >
-                    <i className="fa-regular fa-copy text-xs"></i>
-                  </button>
-                </div>
-              </div>
+          {surah.ayat.map((ayat: Ayat, index: number) => {
+            const isActiveAyat = playerVisible && playMode === 'ayat' && currentAyatIndex === index;
 
-              {/* Arabic Text */}
-              <p
-                className="text-white text-right text-xl md:text-2xl leading-[2.5] md:leading-[2.8] mb-5"
-                style={{ fontFamily: "'Traditional Arabic', 'Amiri', 'KFGQPC Uthman Taha Naskh', serif" }}
-                dir="rtl"
+            return (
+              <div
+                key={ayat.nomorAyat}
+                ref={(el) => {
+                  if (el) ayatRefs.current.set(index, el);
+                }}
+                className={`bg-r-light/5 border rounded-2xl p-5 md:p-6 hover:border-r-light/20 transition ${
+                  isActiveAyat
+                    ? 'border-r-cyan/40 bg-r-cyan/5 animate-ayat-glow'
+                    : bookmarkedAyat === ayat.nomorAyat
+                      ? 'border-r-cyan/40 bg-r-cyan/5'
+                      : 'border-r-light/10'
+                }`}
               >
-                {ayat.teksArab}
-              </p>
+                {/* Ayat Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-r-blue/20 flex items-center justify-center">
+                      <span className="text-xs md:text-sm font-semibold text-r-cyan">{ayat.nomorAyat}</span>
+                    </div>
+                    <span className="text-[10px] md:text-xs text-r-light/40">
+                      {surah.namaLatin} : {ayat.nomorAyat}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {/* Play Ayat Button */}
+                    <button
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
+                        isActiveAyat && isAudioPlaying
+                          ? 'bg-gradient-to-br from-r-blue to-r-cyan text-white shadow-[0_2px_8px_rgba(0,212,170,0.3)]'
+                          : 'bg-r-light/5 text-r-light/40 hover:text-r-cyan hover:bg-r-light/10'
+                      }`}
+                      title="Putar ayat"
+                      onClick={() => handlePlayAyat(index)}
+                    >
+                      <i className={`fa-solid ${
+                        isActiveAyat && isAudioPlaying ? 'fa-volume-high' : 'fa-play'
+                      } text-xs ${!(isActiveAyat && isAudioPlaying) ? 'ml-0.5' : ''}`}></i>
+                    </button>
+                    {/* Bookmark Button */}
+                    <button
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
+                        bookmarkedAyat === ayat.nomorAyat
+                          ? 'bg-r-cyan/20 text-r-cyan'
+                          : 'bg-r-light/5 text-r-light/40 hover:text-r-cyan hover:bg-r-light/10'
+                      }`}
+                      title="Tandai terakhir dibaca"
+                      onClick={() => handleBookmark(ayat)}
+                      disabled={savingAyat === ayat.nomorAyat}
+                    >
+                      {savingAyat === ayat.nomorAyat ? (
+                        <i className="fa-solid fa-spinner fa-spin text-xs"></i>
+                      ) : (
+                        <i className={`fa-${bookmarkedAyat === ayat.nomorAyat ? 'solid' : 'regular'} fa-bookmark text-xs`}></i>
+                      )}
+                    </button>
+                    {/* Copy Button */}
+                    <button
+                      className="w-8 h-8 rounded-full bg-r-light/5 flex items-center justify-center text-r-light/40 hover:text-r-cyan hover:bg-r-light/10 transition"
+                      title="Salin ayat"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${ayat.teksArab}\n\n${ayat.teksIndonesia}\n\n(${surah.namaLatin}: ${ayat.nomorAyat})`);
+                      }}
+                    >
+                      <i className="fa-regular fa-copy text-xs"></i>
+                    </button>
+                  </div>
+                </div>
 
-              {/* Latin Transliteration */}
-              <p className="text-r-light/40 text-xs md:text-sm italic mb-3 leading-relaxed">
-                {ayat.teksLatin}
-              </p>
+                {/* Arabic Text */}
+                <p
+                  className="text-white text-right text-xl md:text-2xl leading-[2.5] md:leading-[2.8] mb-5"
+                  style={{ fontFamily: "'Traditional Arabic', 'Amiri', 'KFGQPC Uthman Taha Naskh', serif" }}
+                  dir="rtl"
+                >
+                  {ayat.teksArab}
+                </p>
 
-              {/* Indonesian Translation */}
-              <p className="text-r-light/70 text-sm md:text-base leading-relaxed">
-                {ayat.teksIndonesia}
-              </p>
-            </div>
-          ))}
+                {/* Latin Transliteration */}
+                <p className="text-r-light/40 text-xs md:text-sm italic mb-3 leading-relaxed">
+                  {ayat.teksLatin}
+                </p>
+
+                {/* Indonesian Translation */}
+                <p className="text-r-light/70 text-sm md:text-base leading-relaxed">
+                  {ayat.teksIndonesia}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Navigation Between Surahs */}
@@ -251,6 +354,25 @@ export default function SurahDetailPage() {
         </div>
 
       </div>
+
+      {/* Audio Player */}
+      {surah && (
+        <AudioPlayer
+          surahName={surah.namaLatin}
+          surahNomor={nomor}
+          ayatList={surah.ayat}
+          audioFullSurah={surah.audioFull}
+          currentAyatIndex={currentAyatIndex}
+          playMode={playMode}
+          selectedQari={selectedQari}
+          isVisible={playerVisible}
+          onClose={handleClosePlayer}
+          onAyatChange={setCurrentAyatIndex}
+          onQariChange={setSelectedQari}
+          onPlayModeChange={setPlayMode}
+          onPlayingChange={setIsAudioPlaying}
+        />
+      )}
 
       {/* Toast Notification */}
       {toastMessage && (

@@ -255,6 +255,7 @@ export default function QuranPage() {
                     <h3 className="text-white font-medium group-hover:text-r-cyan transition">{surah.namaLatin}</h3>
                     <p className="text-xs text-r-light/60">
                       {surah.tempatTurun} • {surah.jumlahAyat} Ayat
+                      <i className="fa-solid fa-headphones text-r-cyan/40 ml-1.5 text-[10px]" title="Murottal tersedia"></i>
                     </p>
                     <p className="text-[10px] text-r-light/40 mt-0.5">{surah.arti}</p>
                   </div>
