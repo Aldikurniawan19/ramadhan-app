@@ -100,10 +100,6 @@ Aplikasi ini dapat diinstal di perangkat mobile seperti aplikasi native — tanp
 
 ---
 
-## 🎨 Design System
-
-Aplikasi menggunakan **dark-mode design** yang konsisten dengan palet warna kustom:
-
 | Token | Warna | Hex | Kegunaan |
 |-------|-------|-----|----------|
 | `r-cyan` | 🟢 Cyan | `#00FFD4` | Aksen, highlight, aktif state |
