@@ -78,11 +78,6 @@ Aplikasi ini dapat diinstal di perangkat mobile seperti aplikasi native — tanp
 - **30 ayat pilihan** — satu untuk setiap hari Ramadhan
 - Rotasi otomatis berdasarkan hari ke-berapa Ramadhan
 
-### 🌗 Dark / Light Mode
-- Toggle **tema gelap dan terang** dari halaman profil
-- Tema terang menggunakan palet warna **Cyan (#00FFD4)** dan **Light (#D2DDFF)**
-- Transisi smooth antar tema
-
 ### 👤 Profil & Autentikasi
 - Sistem **registrasi & login** lengkap
 - Profil pengguna dengan avatar
