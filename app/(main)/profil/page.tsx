@@ -2,10 +2,12 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useAdhan } from '@/app/context/AdhanContext';
 
 export default function ProfilPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { openModal } = useAdhan();
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -34,12 +36,13 @@ export default function ProfilPage() {
         {/* Menu List */}
         <div className="bg-r-light/5 border border-r-light/10 rounded-2xl overflow-hidden flex flex-col">
           {[
-            { icon: 'fa-regular fa-bell', label: 'Pengaturan Notifikasi' },
+            { icon: 'fa-regular fa-bell', label: 'Pengaturan Notifikasi', onClick: openModal },
             { icon: 'fa-solid fa-sliders', label: 'Preferensi Aplikasi' },
             { icon: 'fa-regular fa-circle-question', label: 'Bantuan & FAQ' },
           ].map((item, i) => (
             <button
               key={i}
+              onClick={item.onClick}
               className="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5"
             >
               <div className="flex items-center gap-3 md:gap-5">

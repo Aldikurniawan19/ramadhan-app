@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { usePrayerTimes } from '@/app/context/PrayerTimesContext';
 import { usePuasa } from '@/app/context/PuasaContext';
+import { useAdhan } from '@/app/context/AdhanContext';
 import { addNotification, type AppNotification } from './NotificationPanel';
 
 // localStorage key prefix to track sent notifications per day
@@ -124,6 +125,7 @@ interface QuranHistoryData {
 export default function NotificationManager() {
   const { prayerData, isLoading: prayerLoading } = usePrayerTimes();
   const { currentHariRamadhan, puasaData } = usePuasa();
+  const { playAdhan, adhanEnabled } = useAdhan();
   const hasRequestedPermission = useRef(false);
   const [quranHistory, setQuranHistory] = useState<QuranHistoryData | null>(null);
   const quranHistoryFetched = useRef(false);
@@ -279,8 +281,16 @@ export default function NotificationManager() {
       addNotification(notif);
       sendBrowserNotification(config.title, config.message);
       markSentToday(config.id);
+
+      // Play Adhan if it's a prayer notification and adhan is enabled for this prayer
+      if (config.type === 'sholat' && config.id.startsWith('sholat-')) {
+        const prayerName = config.id.replace('sholat-', ''); // e.g. 'subuh'
+        if (adhanEnabled[prayerName]) {
+          playAdhan();
+        }
+      }
     }
-  }, [prayerData, prayerLoading, puasaData, currentHariRamadhan, quranHistory]);
+  }, [prayerData, prayerLoading, puasaData, currentHariRamadhan, quranHistory, playAdhan, adhanEnabled]);
 
   // Poll every 30 seconds
   useEffect(() => {

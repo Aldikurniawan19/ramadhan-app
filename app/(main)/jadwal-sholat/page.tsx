@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePrayerTimes } from '@/app/context/PrayerTimesContext';
+import { useAdhan } from '@/app/context/AdhanContext';
 import Link from 'next/link';
 
 interface PrayerDetail {
@@ -78,6 +79,7 @@ function getCurrentDateFormatted(): string {
 
 export default function JadwalSholatPage() {
   const { prayerData, city, isLoading } = usePrayerTimes();
+  const { adhanEnabled, toggleAdhan } = useAdhan();
   const [nextIndex, setNextIndex] = useState(0);
   const [countdown, setCountdown] = useState('');
   const [currentTime, setCurrentTime] = useState('');
@@ -236,19 +238,38 @@ export default function JadwalSholatPage() {
                     </div>
                   </div>
 
-                  {/* Right: Time + Rakaat */}
-                  <div className="text-right shrink-0 ml-3">
-                    <div className={`text-lg md:text-xl font-bold tracking-tight ${
-                      isNext ? 'text-white' : isPassed ? 'text-r-light/25' : 'text-white'
-                    }`}>
-                      {prayer.time}
-                    </div>
-                    {prayer.rakaat !== '-' && (
-                      <span className={`text-[10px] md:text-xs ${
-                        isPassed && !isNext ? 'text-r-light/15' : 'text-r-light/35'
+                  {/* Right: Time + Rakaat + Adhan Toggle */}
+                  <div className="flex items-center gap-3 shrink-0 ml-3">
+                    <div className="text-right">
+                      <div className={`text-lg md:text-xl font-bold tracking-tight ${
+                        isNext ? 'text-white' : isPassed ? 'text-r-light/25' : 'text-white'
                       }`}>
-                        {prayer.rakaat}
-                      </span>
+                        {prayer.time}
+                      </div>
+                      {prayer.rakaat !== '-' && (
+                        <span className={`text-[10px] md:text-xs block ${
+                          isPassed && !isNext ? 'text-r-light/15' : 'text-r-light/35'
+                        }`}>
+                          {prayer.rakaat}
+                        </span>
+                      )}
+                    </div>
+                    {/* Adhan Toggle Bell */}
+                    {['subuh', 'dzuhur', 'ashar', 'maghrib', 'isya'].includes(prayer.id) && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleAdhan(prayer.id);
+                        }}
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition ${
+                          adhanEnabled[prayer.id] ?? true
+                            ? 'bg-r-cyan/10 text-r-cyan hover:bg-r-cyan/20'
+                            : 'bg-r-light/5 text-r-light/20 hover:bg-r-light/10'
+                        }`}
+                        title={adhanEnabled[prayer.id] ?? true ? 'Matikan Suara Adzan' : 'Nyalakan Suara Adzan'}
+                      >
+                        <i className={`fa-solid ${adhanEnabled[prayer.id] ?? true ? 'fa-bell' : 'fa-bell-slash'} text-xs md:text-sm`}></i>
+                      </button>
                     )}
                   </div>
                 </div>
