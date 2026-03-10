@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +7,7 @@
 
 @layer base {
   html {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Plus Jakarta Sans", sans-serif;
     height: 100%;
     background-color: #050208;
   }
@@ -33,9 +33,18 @@
 }
 
 @keyframes bounceIn {
-  0% { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.9); }
-  60% { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1.02); }
-  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }
 
 .animate-bounce-in {
@@ -43,8 +52,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fadeIn {
@@ -52,8 +67,14 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(100%); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-slide-up {
@@ -61,11 +82,15 @@
 }
 
 @keyframes ayatGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0); }
-  50% { box-shadow: 0 0 12px 2px rgba(0, 212, 170, 0.15); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 212, 170, 0);
+  }
+  50% {
+    box-shadow: 0 0 12px 2px rgba(0, 212, 170, 0.15);
+  }
 }
 
 .animate-ayat-glow {
   animation: ayatGlow 2s ease-in-out infinite;
 }
-
