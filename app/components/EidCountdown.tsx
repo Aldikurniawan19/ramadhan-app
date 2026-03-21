@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 
-// approximate date for Eid al-Fitr 1 Syawal 1447 H (2026)
-const TARGET_DATE = new Date('2026-03-20T00:00:00Z').getTime();
+// approximate date for Eid al-Adha 10 Dzulhijjah 1447 H (2026)
+const TARGET_DATE = new Date('2026-05-27T00:00:00+07:00').getTime();
 
 export default function EidCountdown() {
   const [mounted, setMounted] = useState(false);
@@ -47,8 +47,8 @@ export default function EidCountdown() {
       
       <div className="relative z-10 flex flex-col items-center">
         <h2 className="text-white/90 text-xs md:text-sm font-medium mb-3 flex items-center gap-2">
-          <i className="fa-solid fa-moon text-r-cyan"></i>
-          Menuju Idul Fitri 1447 H
+          <i className="fa-solid fa-mosque text-r-cyan"></i>
+          Menuju Idul Adha 1447 H
         </h2>
         
         <div className="flex justify-center items-center gap-2 md:gap-4 w-full">
