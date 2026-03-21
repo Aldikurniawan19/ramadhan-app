@@ -8,10 +8,8 @@ import { openTasbihModal } from '@/app/components/TasbihModal';
 import { usePuasa } from '@/app/context/PuasaContext';
 import Link from 'next/link';
 
-// 30 Ramadan-related verses — one for each day
+// 31 daily Quran verses — one for each day of the month, general themes
 const DAILY_VERSES = [
-  { text: 'Hai orang-orang yang beriman, diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang-orang sebelum kamu agar kamu bertakwa.', ref: 'QS. Al-Baqarah: 183' },
-  { text: 'Bulan Ramadhan, bulan yang di dalamnya diturunkan Al-Quran sebagai petunjuk bagi manusia dan penjelasan-penjelasan mengenai petunjuk itu serta pembeda antara yang hak dan bathil.', ref: 'QS. Al-Baqarah: 185' },
   { text: 'Dan apabila hamba-hamba-Ku bertanya kepadamu tentang Aku, maka sesungguhnya Aku adalah dekat. Aku mengabulkan permohonan orang yang berdoa apabila ia memohon kepada-Ku.', ref: 'QS. Al-Baqarah: 186' },
   { text: 'Allah menghendaki kemudahan bagimu dan tidak menghendaki kesukaran bagimu.', ref: 'QS. Al-Baqarah: 185' },
   { text: 'Sesungguhnya bersama kesulitan ada kemudahan. Sesungguhnya bersama kesulitan ada kemudahan.', ref: 'QS. Al-Insyirah: 5-6' },
@@ -25,7 +23,6 @@ const DAILY_VERSES = [
   { text: 'Dan mohonlah pertolongan dengan sabar dan shalat. Dan sesungguhnya yang demikian itu sungguh berat, kecuali bagi orang-orang yang khusyu.', ref: 'QS. Al-Baqarah: 45' },
   { text: 'Barang siapa yang mengerjakan kebaikan seberat zarrah pun, niscaya dia akan melihat balasannya.', ref: 'QS. Az-Zalzalah: 7' },
   { text: 'Dan Tuhanmu berfirman: Berdoalah kepada-Ku, niscaya akan Aku kabulkan untukmu.', ref: 'QS. Ghafir: 60' },
-  { text: 'Sesungguhnya Kami telah menurunkan Al-Quran pada malam kemuliaan. Dan tahukah kamu apakah malam kemuliaan itu? Malam kemuliaan itu lebih baik dari seribu bulan.', ref: 'QS. Al-Qadr: 1-3' },
   { text: 'Dan Kami tidak mengutus engkau Muhammad melainkan untuk menjadi rahmat bagi seluruh alam.', ref: 'QS. Al-Anbiya: 107' },
   { text: 'Maka nikmat Tuhanmu yang manakah yang kamu dustakan?', ref: 'QS. Ar-Rahman: 13' },
   { text: 'Sesungguhnya orang-orang yang beriman dan mengerjakan kebajikan, mereka itu adalah sebaik-baik makhluk.', ref: 'QS. Al-Bayyinah: 7' },
@@ -36,17 +33,26 @@ const DAILY_VERSES = [
   { text: 'Hai orang-orang yang beriman, bertakwalah kepada Allah dan hendaklah setiap diri memperhatikan apa yang telah diperbuatnya untuk hari esok.', ref: 'QS. Al-Hasyr: 18' },
   { text: 'Sesungguhnya shalat itu mencegah dari perbuatan keji dan mungkar.', ref: 'QS. Al-Ankabut: 45' },
   { text: 'Dan orang-orang yang menafkahkan hartanya di malam dan siang hari secara sembunyi-sembunyi dan terang-terangan, maka mereka mendapat pahala di sisi Tuhannya.', ref: 'QS. Al-Baqarah: 274' },
-  { text: 'Sesungguhnya Kami menurunkan Al-Quran ini kepadamu dengan berangsur-angsur.', ref: 'QS. Al-Insan: 23' },
   { text: 'Dan bertasbihlah dengan memuji Tuhanmu sebelum terbit matahari dan sebelum terbenamnya.', ref: 'QS. Thaha: 130' },
   { text: 'Allah-lah yang menciptakan langit dan bumi dan apa yang ada di antaranya dalam enam masa.', ref: 'QS. As-Sajdah: 4' },
   { text: 'Dan carilah pada apa yang telah dianugerahkan Allah kepadamu kebahagiaan negeri akhirat, dan janganlah kamu melupakan bagianmu dari kenikmatan dunia.', ref: 'QS. Al-Qashash: 77' },
+  { text: 'Dialah yang menjadikan bumi sebagai hamparan bagimu dan langit sebagai atap, dan Dia menurunkan air hujan dari langit, lalu Dia menghasilkan dengan hujan itu segala buah-buahan sebagai rezeki untukmu.', ref: 'QS. Al-Baqarah: 22' },
+  { text: 'Sesungguhnya Kami menciptakan manusia dalam bentuk yang sebaik-baiknya.', ref: 'QS. At-Tin: 4' },
+  { text: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan-pasangan dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya.', ref: 'QS. Ar-Rum: 21' },
+  { text: 'Sesungguhnya sesudah kesulitan itu ada kemudahan. Maka apabila kamu telah selesai dari suatu urusan, kerjakanlah dengan sungguh-sungguh urusan yang lain.', ref: 'QS. Al-Insyirah: 6-7' },
+  { text: 'Katakanlah: Dialah Allah, Yang Maha Esa. Allah adalah Tuhan yang bergantung kepada-Nya segala sesuatu.', ref: 'QS. Al-Ikhlas: 1-2' },
 ];
+
+const ID_MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 export default function HomePage() {
   const { currentHariRamadhan, ramadanInfo, ramadanLoading } = usePuasa();
 
-  // Pick today's verse based on the Ramadan day (1-indexed, wraps around)
-  const todayVerse = DAILY_VERSES[(currentHariRamadhan - 1) % DAILY_VERSES.length];
+  // Pick today's verse based on the day of the month (1-indexed, wraps around)
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+  const todayVerse = DAILY_VERSES[(dayOfMonth - 1) % DAILY_VERSES.length];
+  const todayLabel = `${dayOfMonth} ${ID_MONTHS[today.getMonth()]} ${today.getFullYear()}`;
 
   return (
     <div className="transition-opacity duration-300 opacity-100 px-6">
@@ -116,7 +122,7 @@ export default function HomePage() {
         </div>
         <PrayerTimesGrid />
 
-        {/* Daily Verse — rotates based on Ramadan day */}
+        {/* Daily Verse — rotates based on day of month */}
         <div className="mt-4 md:mt-8 bg-r-light/5 border border-r-light/10 rounded-2xl p-5 md:p-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 md:w-48 md:h-48 bg-r-blue/10 rounded-full blur-2xl"></div>
           <div className="flex items-center gap-3 mb-3 md:mb-4">
@@ -125,7 +131,7 @@ export default function HomePage() {
             </div>
             <div>
               <h3 className="text-sm md:text-base font-semibold text-white">Ayat Hari Ini</h3>
-              <span className="text-[10px] md:text-xs text-r-light/40">Hari ke-{currentHariRamadhan} Ramadhan</span>
+              <span className="text-[10px] md:text-xs text-r-light/40">{todayLabel}</span>
             </div>
           </div>
           <p className="text-sm md:text-lg text-r-light/80 leading-relaxed italic relative z-10">
