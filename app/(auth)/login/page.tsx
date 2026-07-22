@@ -9,6 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -78,13 +79,21 @@ export default function LoginPage() {
             <div className="relative">
               <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-r-light/40"></i>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full bg-r-light/5 border border-r-light/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder:text-r-light/30 outline-none focus:border-r-cyan/50 focus:ring-1 focus:ring-r-cyan/30 transition-all text-sm"
+                className="w-full bg-r-light/5 border border-r-light/10 rounded-xl py-3 pl-11 pr-11 text-white placeholder:text-r-light/30 outline-none focus:border-r-cyan/50 focus:ring-1 focus:ring-r-cyan/30 transition-all text-sm"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-r-light/40 hover:text-r-cyan transition-colors"
+                title={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+              >
+                <i className={`fa-regular ${showPassword ? 'fa-eye' : 'fa-eye-slash'} text-sm`}></i>
+              </button>
             </div>
           </div>
 
