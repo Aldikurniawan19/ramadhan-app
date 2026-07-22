@@ -6,14 +6,6 @@ export const metadata: Metadata = {
   title: 'Aplikasi Ramadhan',
   description: 'Aplikasi Ramadhan - Tracker Ibadah Harian, Jadwal Sholat, Al-Quran, dan Doa',
   manifest: '/manifest.json',
-  icons: {
-    icon: [
-      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icon-512x512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    shortcut: '/icon-192x192.png',
-    apple: '/icon-192x192.png',
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -51,10 +43,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
-        <link rel="shortcut icon" href="/icon-192x192.png" />
-        <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className="text-r-light antialiased bg-r-dark">
         <AuthProvider>
@@ -81,3 +70,4 @@ export default function RootLayout({
     </html>
   );
 }
+
