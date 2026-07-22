@@ -124,7 +124,7 @@ interface QuranHistoryData {
 
 export default function NotificationManager() {
   const { prayerData, isLoading: prayerLoading } = usePrayerTimes();
-  const { currentHariRamadhan, puasaData } = usePuasa();
+  const { currentHariRamadhan, puasaData, ramadanInfo } = usePuasa();
   const { playAdhan, adhanEnabled } = useAdhan();
   const hasRequestedPermission = useRef(false);
   const [quranHistory, setQuranHistory] = useState<QuranHistoryData | null>(null);
@@ -176,8 +176,8 @@ export default function NotificationManager() {
     // Build notification configs
     const notifConfigs: NotifConfig[] = [];
 
-    // 1. Imsak warning (5 min before)
-    if (imsakEntry) {
+    // 1. Imsak warning (5 min before) - only during Ramadan
+    if (ramadanInfo.isRamadan && imsakEntry) {
       const warnTime = subtractMinutes(imsakEntry.time, 5);
       if (warnTime) {
         notifConfigs.push({
@@ -192,8 +192,8 @@ export default function NotificationManager() {
       }
     }
 
-    // 2. Iftar (Maghrib time)
-    if (maghribEntry) {
+    // 2. Iftar (Maghrib time) - only during Ramadan
+    if (ramadanInfo.isRamadan && maghribEntry) {
       notifConfigs.push({
         type: 'iftar',
         id: 'iftar',
@@ -246,9 +246,9 @@ export default function NotificationManager() {
       href: tadarusHref,
     });
 
-    // 5. Puasa calendar reminder (07:00)
+    // 5. Puasa calendar reminder (07:00) - only during Ramadan
     const todayPuasa = puasaData[currentHariRamadhan - 1];
-    if (!todayPuasa) {
+    if (ramadanInfo.isRamadan && !todayPuasa) {
       notifConfigs.push({
         type: 'puasa',
         id: 'puasa',

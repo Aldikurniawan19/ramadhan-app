@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePrayerTimes } from '@/app/context/PrayerTimesContext';
+import { usePuasa } from '@/app/context/PuasaContext';
 import { useAdhan } from '@/app/context/AdhanContext';
 import Link from 'next/link';
 
@@ -49,6 +50,7 @@ const PRAYER_DETAILS: Record<string, { arabicName: string; description: string; 
 };
 
 function getNextPrayerIndex(prayers: { time: string }[]): number {
+  if (!prayers || prayers.length === 0) return 0;
   const now = new Date();
   const currentMins = now.getHours() * 60 + now.getMinutes();
   for (let i = 0; i < prayers.length; i++) {
@@ -59,6 +61,7 @@ function getNextPrayerIndex(prayers: { time: string }[]): number {
 }
 
 function getCountdown(targetTime: string): string {
+  if (!targetTime) return '';
   const now = new Date();
   const [h, m] = targetTime.split(':').map(Number);
   let diffMin = (h * 60 + m) - (now.getHours() * 60 + now.getMinutes());
@@ -79,13 +82,20 @@ function getCurrentDateFormatted(): string {
 
 export default function JadwalSholatPage() {
   const { prayerData, city, isLoading } = usePrayerTimes();
+  const { ramadanInfo, ramadanLoading } = usePuasa();
   const { adhanEnabled, toggleAdhan } = useAdhan();
   const [nextIndex, setNextIndex] = useState(0);
   const [countdown, setCountdown] = useState('');
   const [currentTime, setCurrentTime] = useState('');
 
+  // Filter Imsak out outside Ramadan
+  const showImsak = !ramadanLoading && ramadanInfo.isRamadan;
+  const filteredPrayerData = showImsak
+    ? prayerData
+    : prayerData.filter((p) => p.id !== 'imsak');
+
   // Enrich prayer data with details
-  const prayers: PrayerDetail[] = prayerData.map((p) => ({
+  const prayers: PrayerDetail[] = filteredPrayerData.map((p) => ({
     ...p,
     arabicName: PRAYER_DETAILS[p.id]?.arabicName || '',
     description: PRAYER_DETAILS[p.id]?.description || '',
@@ -94,9 +104,9 @@ export default function JadwalSholatPage() {
 
   useEffect(() => {
     const update = () => {
-      const idx = getNextPrayerIndex(prayerData);
+      const idx = getNextPrayerIndex(filteredPrayerData);
       setNextIndex(idx);
-      setCountdown(getCountdown(prayerData[idx]?.time || '00:00'));
+      setCountdown(getCountdown(filteredPrayerData[idx]?.time || '00:00'));
       const now = new Date();
       setCurrentTime(
         `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
@@ -105,7 +115,7 @@ export default function JadwalSholatPage() {
     update();
     const interval = setInterval(update, 30_000);
     return () => clearInterval(interval);
-  }, [prayerData]);
+  }, [filteredPrayerData]);
 
   const nextPrayer = prayers[nextIndex];
 

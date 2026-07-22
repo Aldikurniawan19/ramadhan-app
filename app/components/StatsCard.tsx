@@ -11,10 +11,11 @@ interface QuranHistory {
 }
 
 export default function StatsCard() {
-  const { puasaData, ramadanInfo } = usePuasa();
+  const { puasaData, ramadanInfo, ramadanLoading } = usePuasa();
   const totalPuasa = puasaData.filter(Boolean).length;
   const ramadanDays = ramadanInfo.ramadanDays;
   const puasaPercent = (totalPuasa / ramadanDays) * 100;
+  const showPuasaProgress = !ramadanLoading && ramadanInfo.isRamadan;
 
   const [quranHistory, setQuranHistory] = useState<QuranHistory | null>(null);
   const [quranLoading, setQuranLoading] = useState(true);
@@ -47,24 +48,26 @@ export default function StatsCard() {
     : 0;
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:gap-8 mb-8">
-      {/* Puasa */}
-      <div className="bg-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6">
-        <div className="flex items-center gap-2 mb-2 md:mb-4">
-          <i className="fa-solid fa-moon text-r-cyan md:text-lg"></i>
-          <span className="text-xs md:text-sm font-medium text-white">Puasa</span>
+    <div className={`grid ${showPuasaProgress ? 'grid-cols-2' : 'grid-cols-1'} gap-4 md:gap-8 mb-8`}>
+      {/* Puasa (Displayed only during Ramadan) */}
+      {showPuasaProgress && (
+        <div className="bg-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6">
+          <div className="flex items-center gap-2 mb-2 md:mb-4">
+            <i className="fa-solid fa-moon text-r-cyan md:text-lg"></i>
+            <span className="text-xs md:text-sm font-medium text-white">Puasa</span>
+          </div>
+          <div className="flex items-end gap-1 md:gap-2 mb-2 md:mb-4">
+            <span className="text-2xl md:text-4xl font-bold text-white">{totalPuasa}</span>
+            <span className="text-r-light/60 text-[10px] md:text-xs mb-1 md:mb-2">/ {ramadanDays} Hari</span>
+          </div>
+          <div className="w-full bg-black/40 rounded-full h-1.5 md:h-2">
+            <div
+              className="bg-r-cyan h-1.5 md:h-2 rounded-full transition-all duration-500"
+              style={{ width: `${puasaPercent}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="flex items-end gap-1 md:gap-2 mb-2 md:mb-4">
-          <span className="text-2xl md:text-4xl font-bold text-white">{totalPuasa}</span>
-          <span className="text-r-light/60 text-[10px] md:text-xs mb-1 md:mb-2">/ {ramadanDays} Hari</span>
-        </div>
-        <div className="w-full bg-black/40 rounded-full h-1.5 md:h-2">
-          <div
-            className="bg-r-cyan h-1.5 md:h-2 rounded-full transition-all duration-500"
-            style={{ width: `${puasaPercent}%` }}
-          ></div>
-        </div>
-      </div>
+      )}
 
       {/* Khatam Quran */}
       <div className="bg-r-light/5 border border-r-light/10 rounded-2xl p-4 md:p-6">

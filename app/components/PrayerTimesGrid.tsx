@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePrayerTimes } from '@/app/context/PrayerTimesContext';
+import { usePuasa } from '@/app/context/PuasaContext';
 
 function getNextPrayerIndex(prayerData: { time: string }[]): number {
   const now = new Date();
@@ -15,17 +16,24 @@ function getNextPrayerIndex(prayerData: { time: string }[]): number {
 
 export default function PrayerTimesGrid() {
   const { prayerData, isLoading } = usePrayerTimes();
+  const { ramadanInfo, ramadanLoading } = usePuasa();
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Display Imsak only during Ramadan
+  const showImsak = !ramadanLoading && ramadanInfo.isRamadan;
+  const filteredPrayerData = showImsak
+    ? prayerData
+    : prayerData.filter((p) => p.id !== 'imsak');
+
   useEffect(() => {
-    setActiveIndex(getNextPrayerIndex(prayerData));
-    const interval = setInterval(() => setActiveIndex(getNextPrayerIndex(prayerData)), 60000);
+    setActiveIndex(getNextPrayerIndex(filteredPrayerData));
+    const interval = setInterval(() => setActiveIndex(getNextPrayerIndex(filteredPrayerData)), 60000);
     return () => clearInterval(interval);
-  }, [prayerData]);
+  }, [filteredPrayerData]);
 
   return (
-    <div className="flex md:grid md:grid-cols-6 gap-3 overflow-x-auto md:overflow-visible hide-scrollbar pb-4 -mx-6 px-6 md:mx-0 md:px-0">
-      {prayerData.map((prayer, index) => {
+    <div className={`flex md:grid ${showImsak ? 'md:grid-cols-6' : 'md:grid-cols-5'} gap-3 overflow-x-auto md:overflow-visible hide-scrollbar pb-4 -mx-6 px-6 md:mx-0 md:px-0`}>
+      {filteredPrayerData.map((prayer, index) => {
         const isActive = index === activeIndex;
         return (
           <div

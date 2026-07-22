@@ -2,8 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { usePrayerTimes, PrayerTime } from '@/app/context/PrayerTimesContext';
+import { usePuasa } from '@/app/context/PuasaContext';
 
 function getNextPrayer(prayerData: PrayerTime[]) {
+  if (!prayerData || prayerData.length === 0) {
+    return {
+      nextIndex: 0,
+      countdown: '--:--:--',
+      prayerName: 'Subuh',
+      prayerTime: '04:38',
+      progress: 0,
+    };
+  }
+
   const now = new Date();
   const currentMins = now.getHours() * 60 + now.getMinutes();
   const currentSecs = now.getSeconds();
@@ -46,21 +57,29 @@ function getNextPrayer(prayerData: PrayerTime[]) {
 
 export default function HeroCountdown() {
   const { prayerData, city, isLoading } = usePrayerTimes();
+  const { ramadanInfo, ramadanLoading } = usePuasa();
   const [mounted, setMounted] = useState(false);
+
+  // Filter out Imsak outside Ramadan
+  const showImsak = !ramadanLoading && ramadanInfo.isRamadan;
+  const activePrayers = showImsak
+    ? prayerData
+    : prayerData.filter((p) => p.id !== 'imsak');
+
   const [state, setState] = useState({
     nextIndex: 0,
     countdown: '--:--:--',
-    prayerName: prayerData[0]?.name || 'Imsak',
-    prayerTime: prayerData[0]?.time || '04:28',
+    prayerName: activePrayers[0]?.name || 'Subuh',
+    prayerTime: activePrayers[0]?.time || '04:38',
     progress: 0,
   });
 
   useEffect(() => {
     setMounted(true);
-    setState(getNextPrayer(prayerData));
-    const interval = setInterval(() => setState(getNextPrayer(prayerData)), 1000);
+    setState(getNextPrayer(activePrayers));
+    const interval = setInterval(() => setState(getNextPrayer(activePrayers)), 1000);
     return () => clearInterval(interval);
-  }, [prayerData]);
+  }, [prayerData, showImsak]);
 
   return (
     <div className="relative bg-gradient-to-br from-r-blue to-[#2b358a] rounded-3xl p-6 md:p-10 shadow-[0_10px_30px_rgba(84,101,255,0.3)] overflow-hidden mb-8">
