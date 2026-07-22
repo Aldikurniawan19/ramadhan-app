@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useAdhan } from '@/app/context/AdhanContext';
+import { openLocationModal } from '@/app/components/LocationModal';
 
 export default function ProfilPage() {
   const { data: session } = useSession();
@@ -17,6 +18,24 @@ export default function ProfilPage() {
   const userName = session?.user?.name || 'Hamba Allah';
   const userEmail = session?.user?.email || '';
 
+  const menuItems = [
+    {
+      icon: 'fa-regular fa-bell',
+      label: 'Pengaturan Notifikasi',
+      onClick: openModal,
+    },
+    {
+      icon: 'fa-solid fa-sliders',
+      label: 'Preferensi Aplikasi',
+      onClick: openLocationModal,
+    },
+    {
+      icon: 'fa-regular fa-circle-question',
+      label: 'Bantuan & FAQ',
+      onClick: () => router.push('/bantuan'),
+    },
+  ];
+
   return (
     <div className="pb-6 px-6">
       <div className="max-w-2xl mx-auto w-full">
@@ -25,7 +44,11 @@ export default function ProfilPage() {
         <div className="flex flex-col items-center mt-6 md:mt-10 mb-8 md:mb-12">
           <div className="w-24 h-24 md:w-32 md:h-32 bg-r-blue/20 rounded-full border-2 border-r-cyan flex items-center justify-center mb-4 relative shadow-[0_0_20px_rgba(0,255,212,0.2)]">
             <i className="fa-solid fa-user text-4xl md:text-6xl text-r-cyan"></i>
-            <button className="absolute bottom-0 right-0 md:right-2 md:bottom-2 w-8 h-8 md:w-10 md:h-10 bg-r-blue rounded-full flex items-center justify-center text-white border-2 border-[#1a1b26] hover:scale-110 transition-transform cursor-pointer">
+            <button
+              onClick={openLocationModal}
+              className="absolute bottom-0 right-0 md:right-2 md:bottom-2 w-8 h-8 md:w-10 md:h-10 bg-r-blue rounded-full flex items-center justify-center text-white border-2 border-[#1a1b26] hover:scale-110 transition-transform cursor-pointer"
+              title="Ubah Lokasi & Pengaturan"
+            >
               <i className="fa-solid fa-pen text-xs md:text-sm"></i>
             </button>
           </div>
@@ -35,15 +58,11 @@ export default function ProfilPage() {
 
         {/* Menu List */}
         <div className="bg-r-light/5 border border-r-light/10 rounded-2xl overflow-hidden flex flex-col">
-          {[
-            { icon: 'fa-regular fa-bell', label: 'Pengaturan Notifikasi', onClick: openModal },
-            { icon: 'fa-solid fa-sliders', label: 'Preferensi Aplikasi' },
-            { icon: 'fa-regular fa-circle-question', label: 'Bantuan & FAQ' },
-          ].map((item, i) => (
+          {menuItems.map((item, i) => (
             <button
               key={i}
               onClick={item.onClick}
-              className="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5"
+              className="flex items-center justify-between p-4 md:p-6 hover:bg-r-light/10 transition border-b border-r-light/5 text-left cursor-pointer"
             >
               <div className="flex items-center gap-3 md:gap-5">
                 <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-r-light/10 flex items-center justify-center text-r-light/80">
@@ -58,7 +77,7 @@ export default function ProfilPage() {
           {/* Logout */}
           <button
             onClick={handleLogout}
-            className="flex items-center justify-between p-4 md:p-6 hover:bg-red-500/10 transition"
+            className="flex items-center justify-between p-4 md:p-6 hover:bg-red-500/10 transition text-left cursor-pointer"
           >
             <div className="flex items-center gap-3 md:gap-5">
               <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">
